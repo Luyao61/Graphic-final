@@ -48,7 +48,7 @@
 /* Begin PBXFileReference section */
 		D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = SOURCE_ROOT; };
 		D40AFA7F1AD1E2E7008D61CC /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = SOURCE_ROOT; };
-		D42FFC1E1AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CSE167 Spring 2015 Starter Code"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D42FFC1E1AAFC90E006F8E9C /* CSE167 Final Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CSE167 Final Project"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D42FFC2A1AAFCC9C006F8E9C /* Matrix4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix4.cpp; sourceTree = SOURCE_ROOT; };
 		D42FFC2B1AAFCC9C006F8E9C /* Matrix4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix4.h; sourceTree = SOURCE_ROOT; };
 		D42FFC2C1AAFCC9C006F8E9C /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = SOURCE_ROOT; };
@@ -114,7 +114,7 @@
 			children = (
 				D42FFC361AAFCDA0006F8E9C /* OpenGL.framework */,
 				D42FFC341AAFCD9A006F8E9C /* GLUT.framework */,
-				D42FFC201AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */,
+				D42FFC201AAFC90E006F8E9C /* CSE167 Final Project */,
 				D42FFC1F1AAFC90E006F8E9C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,12 +122,12 @@
 		D42FFC1F1AAFC90E006F8E9C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D42FFC1E1AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */,
+				D42FFC1E1AAFC90E006F8E9C /* CSE167 Final Project */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D42FFC201AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */ = {
+		D42FFC201AAFC90E006F8E9C /* CSE167 Final Project */ = {
 			isa = PBXGroup;
 			children = (
 				E0CA02491BF55A6F00E613F3 /* sample.frag */,
@@ -176,15 +176,16 @@
 				D4FEE23D1AC895C6006CF92D /* MathTestBench.cpp */,
 				D4FEE23E1AC895C6006CF92D /* MathTestBench.h */,
 			);
+			name = "CSE167 Final Project";
 			path = "CSE167 Spring 2015 Starter Code";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D42FFC1D1AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */ = {
+		D42FFC1D1AAFC90E006F8E9C /* CSE167 Final Project */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D42FFC271AAFC90E006F8E9C /* Build configuration list for PBXNativeTarget "CSE167 Spring 2015 Starter Code" */;
+			buildConfigurationList = D42FFC271AAFC90E006F8E9C /* Build configuration list for PBXNativeTarget "CSE167 Final Project" */;
 			buildPhases = (
 				D42FFC1A1AAFC90E006F8E9C /* Sources */,
 				D42FFC1B1AAFC90E006F8E9C /* Frameworks */,
@@ -194,9 +195,9 @@
 			);
 			dependencies = (
 			);
-			name = "CSE167 Spring 2015 Starter Code";
+			name = "CSE167 Final Project";
 			productName = "CSE167 Spring 2015 Starter Code";
-			productReference = D42FFC1E1AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */;
+			productReference = D42FFC1E1AAFC90E006F8E9C /* CSE167 Final Project */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -208,7 +209,7 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = RexWest;
 			};
-			buildConfigurationList = D42FFC191AAFC90E006F8E9C /* Build configuration list for PBXProject "CSE167 Spring 2015 Starter Code" */;
+			buildConfigurationList = D42FFC191AAFC90E006F8E9C /* Build configuration list for PBXProject "CSE167 Final Project" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -220,7 +221,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D42FFC1D1AAFC90E006F8E9C /* CSE167 Spring 2015 Starter Code */,
+				D42FFC1D1AAFC90E006F8E9C /* CSE167 Final Project */,
 			);
 		};
 /* End PBXProject section */
@@ -332,21 +333,21 @@
 		D42FFC281AAFC90E006F8E9C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "CSE167 Final Project";
 			};
 			name = Debug;
 		};
 		D42FFC291AAFC90E006F8E9C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "CSE167 Final Project";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D42FFC191AAFC90E006F8E9C /* Build configuration list for PBXProject "CSE167 Spring 2015 Starter Code" */ = {
+		D42FFC191AAFC90E006F8E9C /* Build configuration list for PBXProject "CSE167 Final Project" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D42FFC251AAFC90E006F8E9C /* Debug */,
@@ -355,7 +356,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D42FFC271AAFC90E006F8E9C /* Build configuration list for PBXNativeTarget "CSE167 Spring 2015 Starter Code" */ = {
+		D42FFC271AAFC90E006F8E9C /* Build configuration list for PBXNativeTarget "CSE167 Final Project" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D42FFC281AAFC90E006F8E9C /* Debug */,

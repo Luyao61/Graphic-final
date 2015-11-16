@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D42FFC1D1AAFC90E006F8E9C"
-               BuildableName = "CSE167 Spring 2015 Starter Code"
-               BlueprintName = "CSE167 Spring 2015 Starter Code"
-               ReferencedContainer = "container:CSE167 Spring 2015 Starter Code.xcodeproj">
+               BuildableName = "CSE167 Final Project"
+               BlueprintName = "CSE167 Final Project"
+               ReferencedContainer = "container:CSE167 Final Project.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D42FFC1D1AAFC90E006F8E9C"
-            BuildableName = "CSE167 Spring 2015 Starter Code"
-            BlueprintName = "CSE167 Spring 2015 Starter Code"
-            ReferencedContainer = "container:CSE167 Spring 2015 Starter Code.xcodeproj">
+            BuildableName = "CSE167 Final Project"
+            BlueprintName = "CSE167 Final Project"
+            ReferencedContainer = "container:CSE167 Final Project.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D42FFC1D1AAFC90E006F8E9C"
-            BuildableName = "CSE167 Spring 2015 Starter Code"
-            BlueprintName = "CSE167 Spring 2015 Starter Code"
-            ReferencedContainer = "container:CSE167 Spring 2015 Starter Code.xcodeproj">
+            BuildableName = "CSE167 Final Project"
+            BlueprintName = "CSE167 Final Project"
+            ReferencedContainer = "container:CSE167 Final Project.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D42FFC1D1AAFC90E006F8E9C"
-            BuildableName = "CSE167 Spring 2015 Starter Code"
-            BlueprintName = "CSE167 Spring 2015 Starter Code"
-            ReferencedContainer = "container:CSE167 Spring 2015 Starter Code.xcodeproj">
+            BuildableName = "CSE167 Final Project"
+            BlueprintName = "CSE167 Final Project"
+            ReferencedContainer = "container:CSE167 Final Project.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
