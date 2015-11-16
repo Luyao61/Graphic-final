@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>2A0C9B8A-F9C4-4AC6-B971-95FE948636AF</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C83879A63710A2D2F8AB7006E0531D55389DDF93</key>
+		<string>https://github.com/rexwest/CSE167-Spring-2015-Starter-Code.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>CSE167 Spring 2015 Starter Code.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C83879A63710A2D2F8AB7006E0531D55389DDF93</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/rexwest/CSE167-Spring-2015-Starter-Code.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C83879A63710A2D2F8AB7006E0531D55389DDF93</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C83879A63710A2D2F8AB7006E0531D55389DDF93</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CSE167-Spring-2015-Starter-Code</string>
+		</dict>
+	</array>
+</dict>
+</plist>
