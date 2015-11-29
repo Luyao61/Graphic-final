@@ -18,23 +18,22 @@
 int Window::width  = 512;   //Set window width in pixels here
 int Window::height = 512;   //Set window height in pixels here
 Skybox *sky;
-
-Vector3 oldPoint;
-BezierPatch *p;
-int oldX, oldY;
-bool leftButton = false;
-bool rightButton = false;
-bool isDraging = false;
-
 Shader *shader;
+
+BezierPatch *p;
+
 int t;
 
+float deltaAngleX = 0.0f;
+float deltaAngleY = 0.0f;
+int xOrigin = -1;
+int yOrigin = -1;
+float angle_Horizontal = 0.0f;
+float angle_Vertical = 0.0f;
+float x_d = 0.0f;
+float y_d = 0.0f;
+float z_d = 0.0f;
 
-// actual vector representing the camera's direction
-float lx=0.0f,lz=-20.0f;
-
-// XZ position of the camera
-float x=0.0f, z=20.0f;
 
 void Window::initialize(void)
 {
@@ -91,16 +90,16 @@ void Window::displayCallback()
     //This will save a copy of the current matrix so that we can
     //make changes to it and 'pop' those changes off later.
     glPushMatrix();
-    
+
     // Clear Color and Depth Buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Reset transformations
     glLoadIdentity();
-    // Set the camera e,d,up
-    gluLookAt(	x, 0.0f, z,
-              x+lx,0.0f,  z+lz,
-              0.0f, 1.0f,  0.0f);
+
+    //Replace the current top of the matrix stack with the inverse camera matrix
+    //This will convert all world coordiantes into camera coordiantes
+    glLoadMatrixf(Globals::camera.getInverseMatrix().ptr());
     
     //Bind the light to slot 0.  We do this after the camera matrix is loaded so that
     //the light position will be treated as world coordiantes
@@ -134,47 +133,50 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
     if (key == 27) {
         exit(0);
     }
-    else if(key == 'a' || key == 'A'){
-        Matrix4 r;
-        r.makeRotateY(0.1);
-        Globals::camera.e = r * Globals::camera.e;
-        Globals::camera.update();
-    }
-    else if(key == 'd' || key == 'D'){
-        Matrix4 r;
-        r.makeRotateY(-0.1);
-        Globals::camera.e = r * Globals::camera.e;
-        Globals::camera.update();
-    }
-    else if(key == 'w' || key == 'W'){
-        
-        Matrix4 r;
-        r.makeRotateX(-0.1);
-        Globals::camera.e = r * Globals::camera.e;
-        Globals::camera.update();
-        
-    }
-    else if(key == 's' || key == 'S'){
-        
-        Matrix4 r;
-        r.makeRotateX(0.1);
-        Globals::camera.e = r * Globals::camera.e;
-        Globals::camera.update();
-        
-    }
-    else if(key == 'r' || key == 'R'){
-        Globals::camera.e = Vector3(0,0,20);
-        Globals::camera.update();
-    }
+
 }
 //TODO: Function Key callbacks!
 
 //TODO: Mouse callbacks!
 void Window::processMouse(int button, int state, int x, int y) {
+    // only start motion if the left button is pressed
+    if (button == GLUT_LEFT_BUTTON) {
+        
+        // when the button is released
+        if (state == GLUT_UP) {
+            angle_Horizontal += deltaAngleX;
+            angle_Vertical += deltaAngleY;
+            xOrigin = -1;
+        }
+        else  {// state = GLUT_DOWN
+            xOrigin = x;
+            yOrigin = y;
+        }
+    }
 
 }
 //TODO: Mouse Motion callbacks!
 void Window::processMotion(int x, int y) {
+    // this will only be true when the left button is down
+    if (xOrigin >= 0) {
+        
+        // update deltaAngle
+        deltaAngleX = (x - xOrigin) * 0.01f;
+        deltaAngleY = (yOrigin - y) * 0.01f;
+        
+        x_d = 20.0f * sin(angle_Horizontal + deltaAngleX) * cos(angle_Vertical + deltaAngleY);
+        z_d = 20.0f * cos(angle_Horizontal + deltaAngleX) * cos(angle_Vertical + deltaAngleY);
+        y_d = 20.0f * sin(angle_Vertical + deltaAngleY);
+
+        Globals::camera.d.set(Globals::camera.e[0] + x_d, Globals::camera.e[1] + y_d, Globals::camera.e[2] - z_d);
+        
+        //y_v = 20.f * cos(angle_Vertical + deltaAngleY);
+
+        
+        //Globals::camera.right = (Globals::camera.d - Globals::camera.e).cross(Globals::camera.up).normalize();
+        Globals::camera.update();
+        
+    }
 
 }
 

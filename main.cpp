@@ -31,9 +31,10 @@ int main(int argc, char *argv[])
     glClear(GL_DEPTH_BUFFER_BIT);                               //Clear depth buffer
     glClearColor(0.0, 0.0, 0.0, 0.0);                           //Set clear color to black
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);                  //Set polygon drawing mode to fill front and back of each polygon
-    //glDisable(GL_CULL_FACE);                                    //Disable backface culling to render both sides of polygons
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);                                    //Disable backface culling to render both sides of polygons
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+
     glShadeModel(GL_SMOOTH);                                    //Set shading to smooth
     
     glEnable(GL_COLOR_MATERIAL);                                //Enable color materials

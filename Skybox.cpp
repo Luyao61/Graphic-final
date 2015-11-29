@@ -27,15 +27,17 @@ Skybox::~Skybox(){
 }
 
 void Skybox::draw(){
-    float halfSize = 1000/2.0;
-    
+    float halfSize = 500.0f;
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+
     
     //Set the OpenGL Matrix mode to ModelView (used when drawing geometry)
     glMatrixMode(GL_MODELVIEW);
     
     //Push a save state onto the matrix stack, and multiply in the toWorld matrix
     glPushMatrix();
-    glMultMatrixf(toWorld.ptr());
+    //glMultMatrixf(toWorld.ptr());
     
     //Make cube!
     //Note: The glBegin, and glEnd should always be as close to the glNormal/glVertex calls as possible

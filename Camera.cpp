@@ -2,17 +2,7 @@
 
 Camera::Camera()
 {
-    c.identity();
-    e.set(0.0, 0.0, 20.0);
-    d.set(0.0, 0.0, 0.0);
-    up.set(0.0, 1.0, 0.0);
-    
-    update();
-    
-    //Pre-define a camera matrix (and its inverse) that are shifted 'e' from the origin
-    //This is used as a default camera position for Project 1
-    //c.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, e[0], e[1], e[2], 1);
-    //ci.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -e[0], -e[1], -e[2], 1);
+    reset();
 }
 
 Camera::~Camera()
@@ -56,6 +46,7 @@ void Camera::set(Vector3& e, Vector3& d, Vector3& up)
     this->e = e;
     this->d = d;
     this->up = up;
+    right = d-e.cross(up);
     update();
 }
 
@@ -64,6 +55,6 @@ void Camera::reset(){
     e.set(0.0, 0.0, 20.0);
     d.set(0.0, 0.0, 0.0);
     up.set(0.0, 1.0, 0.0);
+    right.set(1.0, 0, 0);
     update();
-    
 }

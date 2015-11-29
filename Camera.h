@@ -18,9 +18,10 @@ protected:
     
 public:
     
-    Vector3 e;   //Center of Projection
-    Vector3 d;   //Look At
-    Vector3 up;  //Up Vector ^
+    Vector3 e;       //Center of Projection
+    Vector3 d;       //Look At
+    Vector3 up;      //Up Vector ^
+    Vector3 right;
     
     Camera(void);
     ~Camera(void);
