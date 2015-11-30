@@ -7,6 +7,7 @@
 #include "DrawData.h"
 #include "UpdateData.h"
 #include "Skybox.hpp"
+#include "OBJObject.h"
 
 class Globals
 {
@@ -19,6 +20,12 @@ public:
     static DrawData drawData;
     static UpdateData updateData;
     //Feel free to add more member variables as needed
+    
+    static OBJObject charizard;
+
+    static OBJObject dragon;
+    static OBJObject bear;
+    static OBJObject bunny;
 };
 
 #endif

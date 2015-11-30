@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09D107A91C0CCBF50054ECC2 /* Rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */; };
 		D40AFA801AD1E2E7008D61CC /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */; };
 		D42FFC311AAFCC9C006F8E9C /* Matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42FFC2A1AAFCC9C006F8E9C /* Matrix4.cpp */; };
 		D42FFC321AAFCC9C006F8E9C /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42FFC2C1AAFCC9C006F8E9C /* Window.cpp */; };
@@ -46,6 +47,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rasterizer.cpp; sourceTree = SOURCE_ROOT; };
+		09D107A81C0CCBF50054ECC2 /* Rasterizer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rasterizer.hpp; sourceTree = SOURCE_ROOT; };
 		D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = SOURCE_ROOT; };
 		D40AFA7F1AD1E2E7008D61CC /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = SOURCE_ROOT; };
 		D42FFC1E1AAFC90E006F8E9C /* CSE167 Final Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CSE167 Final Project"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -175,6 +178,8 @@
 				D42FFC2B1AAFCC9C006F8E9C /* Matrix4.h */,
 				D4FEE23D1AC895C6006CF92D /* MathTestBench.cpp */,
 				D4FEE23E1AC895C6006CF92D /* MathTestBench.h */,
+				09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */,
+				09D107A81C0CCBF50054ECC2 /* Rasterizer.hpp */,
 			);
 			name = "CSE167 Final Project";
 			path = "CSE167 Spring 2015 Starter Code";
@@ -249,6 +254,7 @@
 				E0CA02411BF43FE800E613F3 /* BezierCurve.cpp in Sources */,
 				D4FEE23F1AC895C6006CF92D /* MathTestBench.cpp in Sources */,
 				D42FFC5E1AAFCF71006F8E9C /* Vector4.cpp in Sources */,
+				09D107A91C0CCBF50054ECC2 /* Rasterizer.cpp in Sources */,
 				D42FFC591AAFCF71006F8E9C /* Sphere.cpp in Sources */,
 				D40AFA801AD1E2E7008D61CC /* Shader.cpp in Sources */,
 				D42FFC311AAFCC9C006F8E9C /* Matrix4.cpp in Sources */,

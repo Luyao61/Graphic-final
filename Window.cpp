@@ -50,8 +50,8 @@ void Window::initialize(void)
     Globals::cube.material.color = color;
     
     sky= new Skybox();
-    p = new BezierPatch();
-    shader = new Shader("sample.vert", "sample.frag", true);
+    //p = new BezierPatch();
+    //shader = new Shader("sample.vert", "sample.frag", true);
 }
 
 //----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ void Window::reshapeCallback(int w, int h)
     glViewport(0, 0, w, h);                                          //Set new viewport size
     glMatrixMode(GL_PROJECTION);                                     //Set the OpenGL matrix mode to Projection
     glLoadIdentity();                                                //Clear the projection matrix by loading the identity
-    gluPerspective(60.0, double(width)/(double)height, 1.0, 1000.0); //Set perspective projection viewing frustum
+    gluPerspective(60.0, double(width)/(double)height, 1.0, 1000000.0); //Set perspective projection viewing frustum
 }
 
 //----------------------------------------------------------------------------
@@ -107,13 +107,16 @@ void Window::displayCallback()
     Globals::light.bind(0);
     
     //Draw the cube!
-    sky->draw();
+    //sky->draw();
     
+    Globals::charizard.draw(Globals::drawData );
+    Globals::bunny.draw(Globals::drawData);
+    /*
     p->update(t);
-    
     shader->bind();
     p->draw();
     shader->unbind();
+    */
 
     //Pop off the changes we made to the matrix stack this frame
     glPopMatrix();
