@@ -46,7 +46,6 @@ void Camera::set(Vector3& e, Vector3& d, Vector3& up)
     this->e = e;
     this->d = d;
     this->up = up;
-    right = d-e.cross(up);
     update();
 }
 
@@ -55,6 +54,30 @@ void Camera::reset(){
     e.set(0.0, 0.0, 20.0);
     d.set(0.0, 0.0, 0.0);
     up.set(0.0, 1.0, 0.0);
-    right.set(1.0, 0, 0);
+    update();
+}
+
+void Camera::forward(){
+    e = e + (d-e).normalize();
+    d = d + (d-e).normalize();
+    update();
+}
+void Camera::backward(){
+    e = e - (d-e).normalize();
+    d = d - (d-e).normalize();
+    update();
+}
+
+void Camera::rightward(){
+    Vector3 translate  = (d-e).cross(up).normalize();
+    e = e + translate;
+    d = d + translate;
+    update();
+}
+
+void Camera::leftward(){
+    Vector3 translate  = (d-e).cross(up).normalize();
+    e = e - translate;
+    d = d - translate;
     update();
 }

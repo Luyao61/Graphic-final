@@ -14,7 +14,8 @@ public:
     static void reshapeCallback(int, int);
     static void displayCallback(void);
     
-    static void processNormalKeys(unsigned char key, int x, int y);    
+    static void processNormalKeys(unsigned char key, int x, int y);
+    static void processSpecialKeys(int key, int x, int y);
 
 	static void processMouse(int button, int state, int x, int y);
 	static void processMotion(int x, int y);

@@ -21,7 +21,6 @@ public:
     Vector3 e;       //Center of Projection
     Vector3 d;       //Look At
     Vector3 up;      //Up Vector ^
-    Vector3 right;
     
     Camera(void);
     ~Camera(void);
@@ -34,6 +33,10 @@ public:
     void set(Vector3&, Vector3&, Vector3&);
     
     void reset(void);
+    void forward(void);
+    void backward(void);
+    void rightward(void);
+    void leftward(void);
     
 };
 

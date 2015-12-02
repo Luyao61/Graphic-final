@@ -8,6 +8,7 @@
 #include "UpdateData.h"
 #include "Skybox.hpp"
 #include "OBJObject.h"
+#include "Rasterizer.hpp"
 
 class Globals
 {
@@ -23,9 +24,10 @@ public:
     
     static OBJObject charizard;
 
-    static OBJObject dragon;
-    static OBJObject bear;
+//    static OBJObject dragon;
+//    static OBJObject bear;
     static OBJObject bunny;
+    static Rasterizer pokemon;
 };
 
 #endif

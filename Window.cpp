@@ -18,9 +18,11 @@
 int Window::width  = 512;   //Set window width in pixels here
 int Window::height = 512;   //Set window height in pixels here
 Skybox *sky;
-Shader *shader;
+Shader *toon_Shader;
+Shader *light_Shader;
+Shader *ucsd_Shader;
 
-BezierPatch *p;
+BezierPatch *platform;
 
 int t;
 
@@ -38,20 +40,18 @@ float z_d = 0.0f;
 void Window::initialize(void)
 {
     //Setup the light
-    Vector4 lightPos(0.0, 10.0, 15.0, 1.0);
+    Vector4 lightPos(10.0, 10.0, 15.0, 1.0);
     Globals::light.position = lightPos;
     Globals::light.quadraticAttenuation = 0.02;
     
-    //Initialize cube matrix:
-    Globals::cube.toWorld.identity();
-    
-    //Setup the cube's material properties
-    Color color(0x23ff27ff);
-    Globals::cube.material.color = color;
     
     sky= new Skybox();
-    //p = new BezierPatch();
-    //shader = new Shader("sample.vert", "sample.frag", true);
+    platform = new BezierPatch();
+    toon_Shader = new Shader("Toon.vert", "Toon.frag", true);
+    light_Shader = new Shader("dirLightAmbDiffSpec.vert", "dirLightAmbDiffSpec.frag", true);
+    ucsd_Shader = new Shader("ucsd.vert", "ucsd.frag", true);
+    //Globals::pokemon.loadData("OBJ/Charizard2.obj");
+    //Globals::pokemon.toDraw = new OBJObject(Globals::charizard);
 }
 
 //----------------------------------------------------------------------------
@@ -73,6 +73,7 @@ void Window::reshapeCallback(int w, int h)
     glMatrixMode(GL_PROJECTION);                                     //Set the OpenGL matrix mode to Projection
     glLoadIdentity();                                                //Clear the projection matrix by loading the identity
     gluPerspective(60.0, double(width)/(double)height, 1.0, 1000000.0); //Set perspective projection viewing frustum
+    
 }
 
 //----------------------------------------------------------------------------
@@ -104,19 +105,23 @@ void Window::displayCallback()
     //Bind the light to slot 0.  We do this after the camera matrix is loaded so that
     //the light position will be treated as world coordiantes
     //(if we didn't the light would move with the camera, why is that?)
+    //
     Globals::light.bind(0);
     
-    //Draw the cube!
-    //sky->draw();
     
+    //sky->draw();
+
+    light_Shader->bind();
+    toon_Shader -> bind();
     Globals::charizard.draw(Globals::drawData );
-    Globals::bunny.draw(Globals::drawData);
-    /*
-    p->update(t);
-    shader->bind();
-    p->draw();
-    shader->unbind();
-    */
+    toon_Shader -> unbind();
+    
+    ucsd_Shader->bind();
+    platform->draw();
+    ucsd_Shader->unbind();
+    light_Shader->unbind();
+    
+    
 
     //Pop off the changes we made to the matrix stack this frame
     glPopMatrix();
@@ -136,10 +141,56 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
     if (key == 27) {
         exit(0);
     }
-
+    else if (key == 's') {
+        Globals::charizard.scale(true);
+        //Globals::pokemon.keyboard(key, x, y);
+    }
+    else if (key == 'S'){
+        Globals::charizard.scale(false);
+        //Globals::pokemon.keyboard(key, x, y);
+    }
+    else if (key == 'x'){
+        Globals::charizard.movex();
+    }
+    else if (key == 'X'){
+        Globals::charizard.moveX();
+    }
+    else if (key == 'y'){
+        Globals::charizard.movey();
+    }
+    else if (key == 'Y'){
+        Globals::charizard.moveY();
+    }
+    else if (key == 'z'){
+        Globals::charizard.movez();
+    }
+    else if (key == 'Z'){
+        Globals::charizard.moveZ();
+    }
+    else if (key == 'r' || key == 'R'){
+        Globals::camera.reset();
+        angle_Horizontal = angle_Vertical = 0.0f;
+    }
 }
 //TODO: Function Key callbacks!
-
+void Window::processSpecialKeys(int key, int x, int y) {
+    
+    switch(key)
+    {
+        case GLUT_KEY_UP:
+            Globals::camera.forward();
+            break;
+        case GLUT_KEY_DOWN:
+            Globals::camera.backward();
+            break;
+        case GLUT_KEY_LEFT:
+            Globals::camera.leftward();
+            break;
+        case GLUT_KEY_RIGHT:
+            Globals::camera.rightward();
+            break;
+    }
+}
 //TODO: Mouse callbacks!
 void Window::processMouse(int button, int state, int x, int y) {
     // only start motion if the left button is pressed
@@ -176,11 +227,9 @@ void Window::processMotion(int x, int y) {
         //y_v = 20.f * cos(angle_Vertical + deltaAngleY);
 
         
-        //Globals::camera.right = (Globals::camera.d - Globals::camera.e).cross(Globals::camera.up).normalize();
         Globals::camera.update();
         
     }
-
 }
 
 //map 2D coordinate to real world 3D coordinate

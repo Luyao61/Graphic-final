@@ -47,6 +47,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		09845B091C0E3C2C00522E71 /* Toon.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Toon.vert; sourceTree = SOURCE_ROOT; };
+		09845B0A1C0E3C3C00522E71 /* Toon.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Toon.frag; sourceTree = SOURCE_ROOT; };
+		09845B0D1C0E806900522E71 /* dirLightAmbDiffSpec.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = dirLightAmbDiffSpec.frag; sourceTree = SOURCE_ROOT; };
+		09845B0E1C0E806900522E71 /* dirLightAmbDiffSpec.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = dirLightAmbDiffSpec.vert; sourceTree = SOURCE_ROOT; };
 		09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rasterizer.cpp; sourceTree = SOURCE_ROOT; };
 		09D107A81C0CCBF50054ECC2 /* Rasterizer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rasterizer.hpp; sourceTree = SOURCE_ROOT; };
 		D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = SOURCE_ROOT; };
@@ -95,8 +99,8 @@
 		E0CA02401BF43FE800E613F3 /* BezierCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierCurve.h; sourceTree = SOURCE_ROOT; };
 		E0CA02421BF4461300E613F3 /* BezierPatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BezierPatch.cpp; sourceTree = SOURCE_ROOT; };
 		E0CA02431BF4461300E613F3 /* BezierPatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BezierPatch.h; sourceTree = SOURCE_ROOT; };
-		E0CA02491BF55A6F00E613F3 /* sample.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = sample.frag; sourceTree = SOURCE_ROOT; };
-		E0CA024A1BF55A6F00E613F3 /* sample.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = sample.vert; sourceTree = SOURCE_ROOT; };
+		E0CA02491BF55A6F00E613F3 /* ucsd.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ucsd.frag; sourceTree = SOURCE_ROOT; };
+		E0CA024A1BF55A6F00E613F3 /* ucsd.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ucsd.vert; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,19 +137,21 @@
 		D42FFC201AAFC90E006F8E9C /* CSE167 Final Project */ = {
 			isa = PBXGroup;
 			children = (
-				E0CA02491BF55A6F00E613F3 /* sample.frag */,
-				E0CA024A1BF55A6F00E613F3 /* sample.vert */,
+				09845B0D1C0E806900522E71 /* dirLightAmbDiffSpec.frag */,
+				09845B0E1C0E806900522E71 /* dirLightAmbDiffSpec.vert */,
+				09845B091C0E3C2C00522E71 /* Toon.vert */,
+				09845B0A1C0E3C3C00522E71 /* Toon.frag */,
 				E0CA02421BF4461300E613F3 /* BezierPatch.cpp */,
 				E0CA02431BF4461300E613F3 /* BezierPatch.h */,
 				E0CA023F1BF43FE800E613F3 /* BezierCurve.cpp */,
 				E0CA02401BF43FE800E613F3 /* BezierCurve.h */,
 				D42FFC631AB67F52006F8E9C /* main.cpp */,
 				D42FFC2C1AAFCC9C006F8E9C /* Window.cpp */,
+				D42FFC301AAFCC9C006F8E9C /* Window.h */,
 				E061BB881BF2B3AE00119A9D /* Skybox.cpp */,
 				E061BB891BF2B3AE00119A9D /* Skybox.hpp */,
 				D42FFC4C1AAFCF71006F8E9C /* Texture.cpp */,
 				D42FFC4D1AAFCF71006F8E9C /* Texture.h */,
-				D42FFC301AAFCC9C006F8E9C /* Window.h */,
 				D42FFC651AB68012006F8E9C /* Globals.cpp */,
 				D42FFC5F1AB672A8006F8E9C /* Globals.h */,
 				D42FFC2D1AAFCC9C006F8E9C /* Cube.cpp */,
@@ -180,6 +186,8 @@
 				D4FEE23E1AC895C6006CF92D /* MathTestBench.h */,
 				09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */,
 				09D107A81C0CCBF50054ECC2 /* Rasterizer.hpp */,
+				E0CA02491BF55A6F00E613F3 /* ucsd.frag */,
+				E0CA024A1BF55A6F00E613F3 /* ucsd.vert */,
 			);
 			name = "CSE167 Final Project";
 			path = "CSE167 Spring 2015 Starter Code";

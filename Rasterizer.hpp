@@ -18,7 +18,11 @@ class Rasterizer : public Drawable{
 private:
     
 protected:
-    
+    std::vector<std::string>& split(const std::string&, char, std::vector<std::string>&);
+    std::vector<std::string> split(const std::string&, char);
+
+    void parse(std::string&);
+
 public:
     Matrix4 d;   //Viewport Matrix
     Matrix4 p;  //Projection Matrix
@@ -28,7 +32,7 @@ public:
     Rasterizer(void);
     ~Rasterizer(void);
     
-    void loadData(void);
+    void loadData(std::string);
     void clearBuffer(void);
     void drawPoint(int,int,float,float,float);
     void rasterizeTriangle();
@@ -41,6 +45,7 @@ public:
     
     Vector4 rasterizeVertex(Vector4);
     
+    void draw(DrawData& data);
     
 };
 

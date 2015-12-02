@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     //Register the callback for the keyboard
     glutKeyboardFunc(Window::processNormalKeys);
     //Register the callback for the keyboard function keys
-    
+    glutSpecialFunc(Window::processSpecialKeys);
 	//Register the callback for the mouse
 	glutMouseFunc(Window::processMouse);
 	//Register the callback for the mouse motion
