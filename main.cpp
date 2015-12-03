@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     glShadeModel(GL_SMOOTH);                                    //Set shading to smooth
     
     glEnable(GL_COLOR_MATERIAL);                                //Enable color materials
-    //glEnable(GL_LIGHTING);                                      //Enable lighting
+    glEnable(GL_LIGHTING);                                      //Enable lighting
     glEnable(GL_NORMALIZE);                                     //Auto normalize surface normals
     glEnable(GL_TEXTURE_2D);                                    //Enable 2D textures
     

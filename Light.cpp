@@ -11,8 +11,6 @@
 
 Light::Light()
 {
-    bindID = -1;
-    
     ambientColor = Color::ambientDefault();
     diffuseColor = Color::diffuseDefault();
     specularColor = Color::specularDefault();
@@ -20,6 +18,10 @@ Light::Light()
     constantAttenuation = 1.0;
     linearAttenuation = 0.0;
     quadraticAttenuation = 0.05;
+    
+    cutoff = 180.0;
+    exponent = 0.0;
+    spotdirection.set(0.0, 0.0, 0.0);
 }
 
 Light::~Light()
@@ -49,11 +51,15 @@ void Light::bind(int id)
     //Add support for Constant Attenuation
     //Add support for Linear Attenuation
     glLightf(GL_LIGHT0 + bindID, GL_QUADRATIC_ATTENUATION, quadraticAttenuation);
-    
+    glLightf(GL_LIGHT0 + bindID, GL_LINEAR_ATTENUATION, linearAttenuation);
+    glLightf(GL_LIGHT0 + bindID, GL_CONSTANT_ATTENUATION, constantAttenuation);
     //Position the light
     glLightfv(GL_LIGHT0 + bindID, GL_POSITION, position.ptr());
     
     //Setup spotlight direction, angle, and exponent here
+    glLightfv(GL_LIGHT0 + bindID, GL_SPOT_DIRECTION, spotdirection.ptr());
+    glLightf(GL_LIGHT0 + bindID, GL_SPOT_CUTOFF, cutoff);
+    glLightf(GL_LIGHT0 + bindID, GL_SPOT_EXPONENT, exponent);
 }
 
 void Light::unbind(void)

@@ -1,7 +1,9 @@
 #include <iostream>
-
 #ifdef __APPLE__
-    #include <GLUT/glut.h>
+#include "GLee/GLee.h"	//GL header file, including extensions
+
+#include <GLUT/glut.h>
+
 #else
     #include <GL/glut.h>
 #endif
@@ -36,22 +38,67 @@ float x_d = 0.0f;
 float y_d = 0.0f;
 float z_d = 0.0f;
 
+GLuint shadowMapTexture;
+const int shadowMapSize=512;
+Matrix4 lightProjectionMatrix, lightViewMatrix;
+Matrix4 cameraProjectionMatrix, cameraViewMatrix;
 
 void Window::initialize(void)
 {
     //Setup the light
     Vector4 lightPos(10.0, 10.0, 15.0, 1.0);
     Globals::light.position = lightPos;
-    Globals::light.quadraticAttenuation = 0.02;
-    
+    Globals::light.quadraticAttenuation = 0.00;
+    Globals::light.constantAttenuation = 1.0;
+    Globals::light.linearAttenuation = 0.0;
     
     sky= new Skybox();
     platform = new BezierPatch();
     toon_Shader = new Shader("Toon.vert", "Toon.frag", true);
     light_Shader = new Shader("dirLightAmbDiffSpec.vert", "dirLightAmbDiffSpec.frag", true);
     ucsd_Shader = new Shader("ucsd.vert", "ucsd.frag", true);
-    //Globals::pokemon.loadData("OBJ/Charizard2.obj");
-    //Globals::pokemon.toDraw = new OBJObject(Globals::charizard);
+
+    
+    
+    for (int i = 0; i<40; i++) {
+        Globals::charizard.scale(false);
+    }
+    for (int i = 0; i<10; i++) {
+        Globals::charizard.movey();
+    }
+    for (int i = 0; i<5; i++) {
+        Globals::charizard.moveZ();
+    }
+
+    //Load identity modelview
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    //Shading states
+    glShadeModel(GL_SMOOTH);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    
+    //Depth states
+    glClearDepth(1.0f);
+    glDepthFunc(GL_LEQUAL);
+    glEnable(GL_DEPTH_TEST);
+    
+    glEnable(GL_CULL_FACE);
+    
+    //We use glScale when drawing the scene
+    glEnable(GL_NORMALIZE);
+    
+    //Create the shadow map texture
+    glGenTextures(1, &shadowMapTexture);
+    glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapSize, shadowMapSize, 0,
+                 GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 }
 
 //----------------------------------------------------------------------------
@@ -111,15 +158,15 @@ void Window::displayCallback()
     
     //sky->draw();
 
-    light_Shader->bind();
-    toon_Shader -> bind();
+    //light_Shader->bind();
+    //toon_Shader -> bind();
     Globals::charizard.draw(Globals::drawData );
-    toon_Shader -> unbind();
+    //toon_Shader -> unbind();
     
-    ucsd_Shader->bind();
+    //ucsd_Shader->bind();
     platform->draw();
-    ucsd_Shader->unbind();
-    light_Shader->unbind();
+    //ucsd_Shader->unbind();
+    //light_Shader->unbind();
     
     
 

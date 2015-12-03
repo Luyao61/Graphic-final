@@ -3,6 +3,7 @@
 
 #include "Matrix4.h"
 #include "Vector4.h"
+#include "Vector3.h"
 #include "Color.h"
 #include <vector>
 
@@ -11,11 +12,13 @@ class Light
     
 protected:
     
-    int bindID;
+    int bindID = -1;
     
 public:
     
     Vector4 position;
+    
+    Vector3 spotdirection;
     
     Color ambientColor;
     Color diffuseColor;
@@ -25,6 +28,9 @@ public:
     float linearAttenuation;
     float quadraticAttenuation;
     
+    float cutoff;
+    float exponent;
+    
 public:
     
     Light();
@@ -32,6 +38,7 @@ public:
     
     void bind(int);
     void unbind(void);
+    
     
 };
 
