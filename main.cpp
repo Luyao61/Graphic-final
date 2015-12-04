@@ -18,6 +18,7 @@
 
 int main(int argc, char *argv[])
 {
+
     //Math Test Bench
     MathTestBench::runTests();
     
@@ -60,13 +61,13 @@ int main(int argc, char *argv[])
 	//Register the callback for the mouse motion
 	glutMotionFunc(Window::processMotion);
     //Register the callback for the mouse passive motion
-    
+    /*
     //Print Shader Debug Information:
     printf("%s\n%s\n",
            glGetString(GL_RENDERER),  // e.g. Intel HD Graphics 3000 OpenGL Engine
            glGetString(GL_VERSION)    // e.g. 3.2 INTEL-8.0.61
            );
-    
+    */
     //If the shading language symbol is defined
     #ifdef GL_SHADING_LANGUAGE_VERSION
     std::printf("Supported GLSL version is %s.\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));

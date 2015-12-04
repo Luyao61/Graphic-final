@@ -55,6 +55,7 @@ public:
     
     Matrix4 makePerspectiveProjection(float, float, float, float, float);
     Matrix4 makeViewport(float, float, float, float);
+    Vector4 getRow(int);
     
     void print(std::string);
     

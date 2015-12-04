@@ -21,6 +21,11 @@ public:
 	static void processMotion(int x, int y);
 
 	static Vector3 trackObjMapping(int x, int y);
+    
+    static void firstPass(void);
+    static void secondPass(void);
+    static void thirdPass(void);
+    static void updateMatrix(void);
 };
 
 #endif

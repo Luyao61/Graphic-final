@@ -345,6 +345,16 @@ Matrix4 Matrix4::makePerspectiveProjection(float fov, float width, float height,
     //Make this matrix a perspectice project matrix using fov, width, height, near and far
     //See the lecture slides for details
     
+    double aspect = width/height;
+    fov = (fov/180)*M_PI;
+    
+    m[0][0] = 1/(aspect*tan(fov/2));
+    m[1][1] = 1/tan(fov/2);
+    m[2][2] = (near+far)/(near-far);
+    m[3][2] = 2.0*near*far/(near-far);
+    m[2][3] = -1;
+    m[3][3] = 0;
+    
     return *this;
 }
 
@@ -355,6 +365,13 @@ Matrix4 Matrix4::makeViewport(float xmin, float xmax, float ymin, float ymax)
     //Project 3
     //Make this matrix a viewport matrix using xmin, xmax, ymin, and ymax
     //See the lecture slides for details
+    
+    m[0][0] = (xmax-xmin)/2.0;
+    m[3][0] = (xmax+xmin)/2.0;
+    m[1][1] = (ymax-ymin)/2.0;
+    m[3][1] = (ymax+ymin)/2.0;
+    m[2][2] = 0.5;
+    m[3][2] = 0.5;
     
     return *this;
 }
@@ -396,4 +413,10 @@ void Matrix4::print(std::string comment)
         }
         std::cout << std::setw(1) << (element == 3 ? "]" : " ") << std::endl;
     }
+}
+
+Vector4 Matrix4::getRow(int n){
+    Vector4 b;
+    b.set(m[0][n], m[1][n], m[2][n], m[3][n]);
+    return b;
 }
