@@ -32,7 +32,12 @@ void Material::apply(void)
     
     //Set the color property (can be removed once materials are implemented)
     //Used for projects 1, 2, and 3
-    glColor3fv(color.ptr());
+    //glColor3fv(color.ptr());
+    
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientColor.ptr());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuseColor.ptr());
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularColor.ptr());
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 }
 
 

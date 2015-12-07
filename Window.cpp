@@ -15,7 +15,6 @@
 #include "BezierPatch.h"
 #include "Shader.h"
 #include <math.h>
-#include "scene.h"
 
 
 int Window::width  = 512;   //Set window width in pixels here
@@ -40,35 +39,6 @@ float y_d = 0.0f;
 float z_d = 0.0f;
 
 Vector4 lightPos(10.0, 10.0, 15.0, 1.0);
-GLuint shadowMapTexture; // 纹理名字
-Matrix4 lightProjectionMatrix; // 光源视角的投影矩阵
-Matrix4 lightViewMatrix; // 光源视角的视图矩阵
-Matrix4 cameraProjectionMatrix;
-Matrix4 cameraViewMatrix;
-const int shadowMapSize=512;
-
-// Shadow Map
-namespace SM{
-    const int RATIO = 2;
-    
-    const GLfloat WIDTH = 3000;
-    const GLfloat HEIGHT = 3000;
-    //const GLfloat HEIGHT = 2048.0;
-    
-    GLhandleARB shaderID;
-    GLuint uniform;
-    GLuint uniformX;
-    GLuint uniformY;
-    
-    GLuint shadowing;
-    int mode = OFF;
-    
-    // Depth texture
-    GLuint texture;
-    
-    GLuint matrix;
-}
-
 
 void Window::initialize(void)
 {
@@ -83,8 +53,6 @@ void Window::initialize(void)
     toon_Shader = new Shader("Toon.vert", "Toon.frag", true);
     light_Shader = new Shader("dirLightAmbDiffSpec.vert", "dirLightAmbDiffSpec.frag", true);
     ucsd_Shader = new Shader("ucsd.vert", "ucsd.frag", true);
-
-    
     
     for (int i = 0; i<40; i++) {
         Globals::charizard.scale(false);
@@ -95,18 +63,6 @@ void Window::initialize(void)
     for (int i = 0; i<5; i++) {
         Globals::charizard.moveZ();
     }
-
-
-    glGenTextures(1, &shadowMapTexture);
-    glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapSize, shadowMapSize, 0,
-                 GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    updateMatrix();
-
 }
 
 //----------------------------------------------------------------------------
@@ -116,8 +72,6 @@ void Window::idleCallback()
 {
     //Call the display routine to draw the cube
     displayCallback();
-    
-    //firstPass();
 }
 
 //----------------------------------------------------------------------------
@@ -137,6 +91,7 @@ void Window::reshapeCallback(int w, int h)
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
 {
+
     t=glutGet(GLUT_ELAPSED_TIME);
     //Clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -303,163 +258,3 @@ Vector3 Window::trackObjMapping(int x, int y) {
 	v = v.normalize();
 	return v;
 }
-
-
-void Window::firstPass(){
-    //First pass - from light's point of view
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(lightProjectionMatrix.ptr());
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(lightViewMatrix.ptr());
-    //Use viewport the same size as the shadow map
-    glViewport(0, 0, shadowMapSize, shadowMapSize);
-     //Draw back faces into the shadow map
-    glCullFace(GL_FRONT);
-    //Disable color writes, and use flat shading for speed
-    glShadeModel(GL_FLAT);
-    glColorMask(0, 0, 0, 0);
-    
-    //Draw the scene
-    Globals::charizard.draw(Globals::drawData );
-    platform->draw();
-    //DrawScene(0.0);
-    
-    //Read the depth buffer into the shadow map texture
-    glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
-    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, shadowMapSize, shadowMapSize);
-    //restore states
-    glCullFace(GL_BACK);
-    glShadeModel(GL_SMOOTH);
-    glColorMask(1, 1, 1, 1);
-    
-    secondPass();
-}
-
-void Window::secondPass(){
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(cameraProjectionMatrix.ptr());
-    glMatrixMode(GL_MODELVIEW);
-    //glLoadMatrixf(cameraViewMatrix.ptr());
-    glLoadMatrixf(Globals::camera.getInverseMatrix().ptr());
-
-    glViewport(0, 0, width, height);
-    
-    //Use dim light to represent shadowed areas
-    GLfloat white[] = {0.2, 0.2, 0.2, 0.2};
-    GLfloat black[] = {0.0, 0.0, 0.0, 0.0};
-    GLfloat position[] = {10.0,10.0,15.0,1.0};
-    glLightfv(GL_LIGHT1, GL_POSITION, position);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, white);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, black);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHTING);
-    
-    thirdPass();
-}
-
-void Window::thirdPass(){
-    //Draw with bright light
-    GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, white);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, white);
-    
-    static Matrix4 biasMatrix(0.5f, 0.0f, 0.0f, 0.0f,
-                                0.0f, 0.5f, 0.0f, 0.0f,
-                                0.0f, 0.0f, 0.5f, 0.0f,
-                                0.5f, 0.5f, 0.5f, 1.0f); //bias from [-1, 1] to [0, 1]
-    Matrix4 textureMatrix=biasMatrix*lightProjectionMatrix*lightViewMatrix;
-    //Set up texture coordinate generation.
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGenfv(GL_S, GL_EYE_PLANE, textureMatrix.getRow(0).ptr());
-    glEnable(GL_TEXTURE_GEN_S);
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGenfv(GL_T, GL_EYE_PLANE, textureMatrix.getRow(1).ptr());
-    glEnable(GL_TEXTURE_GEN_T);
-    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGenfv(GL_R, GL_EYE_PLANE, textureMatrix.getRow(2).ptr());
-    glEnable(GL_TEXTURE_GEN_R);
-    glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-    glTexGenfv(GL_Q, GL_EYE_PLANE, textureMatrix.getRow(3).ptr());
-    glEnable(GL_TEXTURE_GEN_Q);
-    
-    
-    //Bind & enable shadow map texture
-    glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
-    glEnable(GL_TEXTURE_2D);
-    //Enable shadow comparison
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
-    //Shadow comparison should be true (ie not in shadow) if r<=texture
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-    //Shadow comparison should generate an INTENSITY result
-    glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
-    
-    //Set alpha test to discard false comparisons
-    glAlphaFunc(GL_GEQUAL, 0.99f);
-    glEnable(GL_ALPHA_TEST);
-    
-    //Draw the scene
-    //Globals::charizard.draw(Globals::drawData );
-    //platform->draw();
-    Globals::charizard.draw(Globals::drawData);
-    platform->draw();
-    
-    
-    //Disable textures and texgen
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-    glDisable(GL_TEXTURE_GEN_R);
-    glDisable(GL_TEXTURE_GEN_Q);
-    //Restore other states
-    glDisable(GL_LIGHTING);
-    glDisable(GL_ALPHA_TEST);
-    
-    
-    //Set matrices for ortho
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(-1.0f, 1.0f, -1.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    
-    //reset matrices
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    
-    glFinish();
-    glutSwapBuffers();
-    glutPostRedisplay();
-}
-
-void Window::updateMatrix(){
-    
-    
-    //Calculate & save matrices
-    glPushMatrix();
-    
-    cameraProjectionMatrix.makePerspectiveProjection(60.0f, (float)width, (float)height, 1.0f, 1000.0f);
-    
-    glLoadIdentity();
-    gluLookAt(Globals::camera.e[0], Globals::camera.e[1], Globals::camera.e[2],
-              Globals::camera.d[0], Globals::camera.d[1], Globals::camera.d[2],
-              0.0f, 1.0f, 0.0f);
-    glGetFloatv(GL_MODELVIEW_MATRIX, cameraViewMatrix.ptr());
-
-    lightProjectionMatrix.makePerspectiveProjection(90.0f, 1.0f,1.0f, 1.0f, 1000.0f);
-    
-    glLoadIdentity();
-    gluLookAt( Globals::light.position[0], Globals::light.position[1], Globals::light.position[2],
-              Globals::camera.d[0], Globals::camera.d[1], Globals::camera.d[2],
-              0.0f, 1.0f, 0.0f);
-    glGetFloatv(GL_MODELVIEW_MATRIX, lightViewMatrix.ptr());
-    
-    glPopMatrix();
-}
-

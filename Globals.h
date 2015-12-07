@@ -26,8 +26,9 @@ public:
 
 //    static OBJObject dragon;
 //    static OBJObject bear;
-    static OBJObject bunny;
-    static Rasterizer pokemon;
+//    static OBJObject bunny;
+    static OBJObject cloud;
+
 };
 
 #endif

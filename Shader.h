@@ -37,11 +37,11 @@ private:
 
 protected:
     
-	GLhandleARB pid;
     static GLhandleARB currentlyBoundShaderID;
     
 public:
-    
+    GLhandleARB pid;
+
 	Shader(const char *vert, const char *frag, bool isFile=true);
 	~Shader();
     

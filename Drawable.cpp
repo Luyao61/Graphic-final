@@ -49,7 +49,6 @@ void Drawable::orbit(float radians){
     toWorld = rotation  * toWorld;
     
     center = rotation * center;
-    center.print("Drawable New Position");
     
 }
 
@@ -60,7 +59,6 @@ void Drawable::moveX(){
     toWorld = move * toWorld;
     
     center = move * center;
-    center.print("Drawable New Position");
     
 }
 void Drawable::movex(){
@@ -69,7 +67,6 @@ void Drawable::movex(){
     
     toWorld = move * toWorld;
     center = move * center;
-    center.print("Drawable New Position");
     
 }
 
@@ -79,7 +76,6 @@ void Drawable::moveY(){
     
     toWorld = move * toWorld;
     center = move * center;
-    center.print("Drawable New Position");
     
 }
 void Drawable::movey(){
@@ -88,7 +84,6 @@ void Drawable::movey(){
     
     toWorld = move * toWorld;
     center = move * center;
-    center.print("Drawable New Position");
 }
 void Drawable::moveZ(){
     Matrix4 move;
@@ -96,7 +91,6 @@ void Drawable::moveZ(){
     
     toWorld = move * toWorld;
     center = move * center;
-    center.print("Drawable New Position");
     
 }
 void Drawable::movez(){
@@ -105,7 +99,6 @@ void Drawable::movez(){
     
     toWorld = move * toWorld;
     center = move * center;
-    center.print("Drawable New Position");
 }
 
 
@@ -118,11 +111,9 @@ void Drawable::scale(bool x){
         scale.makeScale(0.9);
     }
     toWorld = toWorld * scale;
-    center.print("Drawable New Position");
 }
 
 void Drawable::reset(){
     toWorld.identity();
     center.set(0, 0, 0, 1);
-    center.print("Drawable New Position");
 }
