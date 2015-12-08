@@ -15,7 +15,7 @@ class OBJObject : public Drawable
     
 protected:
     
-    
+
     
     //Helper functions
     std::vector<std::string>& split(const std::string&, char, std::vector<std::string>&);
@@ -23,11 +23,13 @@ protected:
     
     //Parse
     void parse(std::string&);
+    void drawBoundingBox(void);
+
     
 public:
     
     //Storage vectors
-    
+
     
     OBJObject(std::string);
     OBJObject(OBJObject const &);

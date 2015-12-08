@@ -1,9 +1,9 @@
 #include "OBJObject.h"
 
 #ifdef __APPLE__
-#include <GLUT/glut.h>
+    #include <GLUT/glut.h>
 #else
-#include <GL/glut.h>
+    #include <GL/glut.h>
 #endif
 
 #include "Window.h"
@@ -11,15 +11,17 @@
 #include <sstream>
 #include <fstream>
 #include "Vector3.h"
+#include "Globals.h"
+
 
 #define deleteVector(__type__, __vect__) do {\
-std::vector<__type__>::iterator iter; \
-std::vector<__type__>::iterator end; \
-iter = __vect__->begin();\
-end = __vect__->end();\
-while(iter != end) delete (*(iter++));\
-delete __vect__;\
-} while(false)
+                                   std::vector<__type__>::iterator iter; \
+                                   std::vector<__type__>::iterator end; \
+                                   iter = __vect__->begin();\
+                                   end = __vect__->end();\
+                                   while(iter != end) delete (*(iter++));\
+                                   delete __vect__;\
+                               } while(false)
 
 
 OBJObject::OBJObject(std::string filename) : Drawable()
@@ -35,6 +37,7 @@ OBJObject::OBJObject(std::string filename) : Drawable()
         std::cerr << "Out of Range error: " << oor.what() << '\n';
         exit(-1);
     }
+    //this->hasBBox = false;
 }
 
 OBJObject::OBJObject(OBJObject const &obj) : Drawable(){
@@ -62,6 +65,12 @@ void OBJObject::draw(DrawData& data)
     
     glPushMatrix();
     glMultMatrixf(toWorld.ptr());
+    
+    if (hasBBox) {
+        if (Globals::drawBoundingBox) {
+            drawBoundingBox();
+        }
+    }
     
     glBegin(GL_TRIANGLES);
     
@@ -121,7 +130,7 @@ void OBJObject::draw(DrawData& data)
         exit(-1);
         
     }
-    
+
     glEnd();
     
     glPopMatrix();
@@ -143,14 +152,14 @@ void OBJObject::parse(std::string& filename)
     
     int lineNum = 0;
     
-    std::cout << "Starting parse..." << std::endl;
+    std::cout << "Starting parse..." << "Filename: " << filename << std::endl;
     
     //While all your lines are belong to us
     while (std::getline(infile, line))
     {
         //Progress
-        if(++lineNum % 10000 == 0)
-            std::cout << "At line " << lineNum << std::endl;
+        if(++lineNum % 1000 == 0)
+            std::cout << "At line " << lineNum << "  Filename: " << filename << std::endl;
         
         //Split a line into tokens by delimiting it on spaces
         //"Er Mah Gerd" becomes ["Er", "Mah", "Gerd"]
@@ -186,7 +195,7 @@ void OBJObject::parse(std::string& filename)
             float z = std::stof(tokens.at(3));
             
             normals->push_back(new Vector3(x,y,z));
-            
+
         }
         else if(tokens.at(0).compare("f") == 0)
         {
@@ -202,13 +211,25 @@ void OBJObject::parse(std::string& filename)
             faceToken = split(tokens.at(2), '/', faceToken);
             face->vertexIndices[1] = std::stoi(faceToken.at(0)) - 1;
             face->normalIndices[1] = std::stoi(faceToken.at(2)) - 1;
-            
+
             faceToken.clear();
             faceToken = split(tokens.at(3), '/', faceToken);
             face->vertexIndices[2] = std::stoi(faceToken.at(0)) - 1;
             face->normalIndices[2] = std::stoi(faceToken.at(2)) - 1;
             
             faces->push_back(face);
+        }
+        else if(tokens.at(0).compare("min") == 0){
+            min_x = std::stof(tokens.at(1));
+            min_y = std::stof(tokens.at(2));
+            min_z = std::stof(tokens.at(3));
+            hasBBox = true;
+        }
+        else if(tokens.at(0).compare("max") == 0){
+            max_x = std::stof(tokens.at(1));
+            max_y = std::stof(tokens.at(2));
+            max_z = std::stof(tokens.at(3));
+            hasBBox = true;
         }
         else if(tokens.at(0).compare("How does I are C++?!?!!") == 0)
         {
@@ -243,7 +264,56 @@ std::vector<std::string> OBJObject::split(const std::string &s, char delim)
 }
 
 
+void OBJObject::drawBoundingBox(){
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    glBegin(GL_QUADS);
+ 
+ // Draw front face:
+    glNormal3f(0.0, 0.0, 1.0);
+    glVertex3f(min_x,  min_y,  max_z);
+    glVertex3f(min_x,  max_y,  max_z);
+    glVertex3f(max_x,  max_y,  max_z);
+    glVertex3f(max_x,  min_y,  max_z);
+ 
+ // Draw left side:
+    glNormal3f(-1.0, 0.0, 0.0);
+    glVertex3f(min_x,  min_y,  max_z);
+    glVertex3f(min_x,  min_y,  min_z);
+    glVertex3f(min_x,  max_y,  min_z);
+    glVertex3f(min_x,  max_y,  max_z);
+ 
+ // Draw right side:
+    glNormal3f(1.0, 0.0, 0.0);
+    glVertex3f(max_x,  min_y,  max_z);
+    glVertex3f(max_x,  min_y,  min_z);
+    glVertex3f(max_x,  max_y,  min_z);
+    glVertex3f(max_x,  max_y,  max_z);
 
+ // Draw back face:
+    glNormal3f(0.0, 0.0, -1.0);
+    glVertex3f(min_x,  min_y,  min_z);
+    glVertex3f(min_x,  max_y,  min_z);
+    glVertex3f(max_x,  max_y,  min_z);
+    glVertex3f(max_x,  min_y,  min_z);
+ 
+ // Draw top side:
+    glNormal3f(0.0, 1.0, 0.0);
+    glVertex3f(min_x,  max_y,  max_z);
+    glVertex3f(min_x,  max_y,  min_z);
+    glVertex3f(max_x,  max_y,  min_z);
+    glVertex3f(max_x,  max_y,  max_z);
+
+ 
+ // Draw bottom side:
+    glNormal3f(0.0, -1.0, 0.0);
+    glVertex3f(min_x,  min_y,  max_z);
+    glVertex3f(min_x,  min_y,  min_z);
+    glVertex3f(max_x,  min_y,  min_z);
+    glVertex3f(max_x,  min_y,  max_z);
+
+    glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+}
 
 
 

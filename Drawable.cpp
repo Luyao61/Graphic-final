@@ -112,6 +112,13 @@ void Drawable::scale(bool x){
     }
     toWorld = toWorld * scale;
 }
+void Drawable::scale(int x){
+    Matrix4 scale;
+
+    scale.makeScale(x);
+
+    toWorld = toWorld * scale;
+}
 
 void Drawable::reset(){
     toWorld.identity();

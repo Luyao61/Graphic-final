@@ -1,4 +1,3 @@
-#include <iostream>
 #ifdef __APPLE__
 
 #include <GLUT/glut.h>
@@ -15,7 +14,8 @@
 #include "BezierPatch.h"
 #include "Shader.h"
 #include <math.h>
-
+#include <iostream>
+using namespace std;
 
 int Window::width  = 512;   //Set window width in pixels here
 int Window::height = 512;   //Set window height in pixels here
@@ -38,11 +38,21 @@ float x_d = 0.0f;
 float y_d = 0.0f;
 float z_d = 0.0f;
 
-Vector4 lightPos(10.0, 10.0, 15.0, 1.0);
+
+
+struct OBJPair {
+    OBJObject* o1;
+    OBJObject* o2;
+};
+vector<OBJObject*> list_x;
+vector<OBJObject*> list_y;
+vector<OBJObject*> list_z;
+vector<OBJPair> possibleCollisionPair;
 
 void Window::initialize(void)
 {
     //Setup the light
+    Vector4 lightPos(10.0, 10.0, 15.0, 1.0);
     Globals::light.position = lightPos;
     Globals::light.quadraticAttenuation = 0.00;
     Globals::light.constantAttenuation = 1.0;
@@ -63,6 +73,17 @@ void Window::initialize(void)
     for (int i = 0; i<5; i++) {
         Globals::charizard.moveZ();
     }
+    list_x = *new vector<OBJObject*>;
+    possibleCollisionPair = *new vector<OBJPair>;
+    list_x.push_back(&Globals::cloudA1);
+    list_x.push_back(&Globals::cloudB1);
+    //list_y.push_back(&Globals::cloudA1);
+    //list_y.push_back(&Globals::cloudB1);
+    //list_z.push_back(&Globals::cloudA1);
+    //list_z.push_back(&Globals::cloudB1);
+    insertionSortList(list_x);
+    findOverlapPair(list_x);
+    testCollision();
 }
 
 //----------------------------------------------------------------------------
@@ -125,7 +146,11 @@ void Window::displayCallback()
 
     //light_Shader->bind();
     //toon_Shader -> bind();
-    Globals::charizard.draw(Globals::drawData );
+    
+    Globals::cloudA1.draw(Globals::drawData);
+    Globals::cloudB1.draw(Globals::drawData);
+    
+    //Globals::charizard.draw(Globals::drawData );
     //toon_Shader -> unbind();
     
     //DrawScene(0);
@@ -155,12 +180,13 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
     if (key == 27) {
         exit(0);
     }
+    else if (key == 'b'){
+        Globals::drawBoundingBox = !Globals::drawBoundingBox;
+    }
     else if (key == 's') {
-        Globals::charizard.scale(true);
         //Globals::pokemon.keyboard(key, x, y);
     }
     else if (key == 'S'){
-        Globals::charizard.scale(false);
         //Globals::pokemon.keyboard(key, x, y);
     }
     else if (key == 'x'){
@@ -170,10 +196,9 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
         Globals::charizard.moveX();
     }
     else if (key == 'y'){
-        Globals::charizard.movey();
     }
     else if (key == 'Y'){
-        Globals::charizard.moveY();
+        //Globals::charizard.moveY();
     }
     else if (key == 'z'){
         Globals::charizard.movez();
@@ -240,11 +265,104 @@ void Window::processMotion(int x, int y) {
         
         //y_v = 20.f * cos(angle_Vertical + deltaAngleY);
 
-        
         Globals::camera.update();
         
     }
 }
+
+void Window::insertionSortList(vector<OBJObject*> list){
+    for (int j = 1; j < list.size(); j++)
+    {
+        Vector4 keyelementVector, listelementVector;
+        OBJObject *keyelement = list.at(j);
+        keyelementVector.set(keyelement->min_x, keyelement->min_y, keyelement->min_z, 1);
+        keyelementVector = keyelement->toWorld * keyelementVector;
+        //float key = keyelement->min_x;
+        float key = keyelementVector[0];
+
+        int i = j - 1;
+        
+        while (i >= 0 )
+        {
+            listelementVector.set(list.at(i)->min_x,list.at(i)->min_y,list.at(i)->min_z,1);
+            listelementVector = list.at(i)->toWorld * listelementVector;
+
+            if (listelementVector[0] > key) {
+                OBJObject *swapper = list.at(i);
+                
+                /*
+                 if (keyelement.Begin && !swapper.Begin)
+                 {
+                 if (CheckBoundingBoxes(swapper.Body, keyelement.Body))
+                 {
+                 lock (fullOverlaps) fullOverlaps.Add(new BroadphasePair(swapper.Body, keyelement.Body));
+                 }
+                 }
+                 
+                 if (!keyelement.Begin && swapper.Begin)
+                 {
+                 lock (fullOverlaps) fullOverlaps.Remove(new BroadphasePair(swapper.Body, keyelement.Body));
+                 }
+                 */
+                
+                list.at(i + 1) = swapper;
+                i = i - 1;
+            }
+
+        }
+        list.at(i + 1) = keyelement;
+    }
+}
+void Window::findOverlapPair(vector<OBJObject*> list){
+    vector<OBJObject*> activeList = * new vector<OBJObject*>;
+    activeList.push_back(list.at(0));
+    Vector4 list_item, activeList_item;
+    
+    for (int i = 1; i<list.size(); i++) {
+        //transfer local coordinate to world coordinate
+        list_item.set(list.at(i)->min_x, list.at(i)->min_y, list.at(i)->min_z, 1);
+        list_item = list.at(i)->toWorld * list_item;
+        for (int j=0; j<activeList.size(); j++) {
+            //transfer local coordinate to world coordinate
+            activeList_item.set(activeList.at(j)->min_x, activeList.at(j)->min_y, activeList.at(j)->min_z, 1);
+            activeList_item = activeList.at(j)->toWorld * activeList_item;
+            
+            //if (list.at(i)->min_x > activeList.at(i)->max_x) {
+            if (list_item[0] > activeList_item[0]) {
+                activeList.erase(activeList.begin() + j);
+            }
+            else{
+                activeList.push_back(list.at(i));
+                OBJPair pair;
+                pair.o1 = list.at(i);
+                pair.o2 = activeList.at(j);
+                possibleCollisionPair.push_back(pair);
+                break;
+            }
+        }
+    }
+}
+
+void Window::testCollision(){
+    for (int i = 0; i < possibleCollisionPair.size(); i++) {
+        Vector4 o1VectorMin, o1VectorMax, o2VectorMin, o2VectorMax;
+        o1VectorMin.set(possibleCollisionPair.at(i).o1->min_x, possibleCollisionPair.at(i).o1->min_y, possibleCollisionPair.at(i).o1->min_z, 1);
+        o2VectorMin.set(possibleCollisionPair.at(i).o2->min_x, possibleCollisionPair.at(i).o2->min_y, possibleCollisionPair.at(i).o2->min_z, 1);
+        o1VectorMax.set(possibleCollisionPair.at(i).o1->max_x, possibleCollisionPair.at(i).o1->max_y, possibleCollisionPair.at(i).o1->max_z, 1);
+        o2VectorMax.set(possibleCollisionPair.at(i).o2->max_x, possibleCollisionPair.at(i).o2->max_y, possibleCollisionPair.at(i).o2->max_z, 1);
+        o1VectorMin = possibleCollisionPair.at(i).o1->toWorld * o1VectorMin;
+        o2VectorMin = possibleCollisionPair.at(i).o2->toWorld * o2VectorMin;
+        o1VectorMax = possibleCollisionPair.at(i).o1->toWorld * o1VectorMax;
+        o2VectorMax = possibleCollisionPair.at(i).o2->toWorld * o2VectorMax;
+        
+        if (o1VectorMin[1] < o2VectorMax[1] && o2VectorMin[1] < o1VectorMax[1]) {
+            if (o1VectorMin[2] < o2VectorMax[2] && o2VectorMin[2] < o1VectorMax[2]) {
+                cout << "Colision" << endl;
+            }
+        }
+    }
+}
+
 
 //map 2D coordinate to real world 3D coordinate
 Vector3 Window::trackObjMapping(int x, int y) {

@@ -22,7 +22,11 @@ class Drawable
 {
     
 public:
+    //for bounding box;
+    float min_x, min_y, min_z, max_x, max_y, max_z;
+    bool hasBBox;
     
+
     std::vector<Vector3*>* vertices;
     std::vector<Vector3*>* normals;
     std::vector<Face*>* faces;
@@ -31,8 +35,8 @@ public:
     std::vector<Color*>* colorP3;  //added color for Project3, random color
     Vector4 center;
     int renderMode;
-    
-    
+
+
     
     Matrix4 toWorld;
     Material material;
@@ -50,11 +54,12 @@ public:
     void movez();
     void moveZ();
     void scale(bool);
+    void scale(int);
     void orbit(float);
     
     void spin(float);
     void reset();
-    
+
     
 };
 

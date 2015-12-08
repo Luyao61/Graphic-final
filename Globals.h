@@ -23,11 +23,17 @@ public:
     //Feel free to add more member variables as needed
     
     static OBJObject charizard;
-
+    static OBJObject cloudA1;
+    static OBJObject cloudA2;
+    static OBJObject cloudB1;
+    static OBJObject cloudB2;
 //    static OBJObject dragon;
 //    static OBJObject bear;
 //    static OBJObject bunny;
-    static OBJObject cloud;
+
+    
+    static bool drawBoundingBox;
+
 
 };
 
