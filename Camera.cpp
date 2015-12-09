@@ -51,9 +51,12 @@ void Camera::set(Vector3& e, Vector3& d, Vector3& up)
 
 void Camera::reset(){
     c.identity();
-    e.set(0.0, 0.0, 40.0);
-    d.set(0.0, 0.0, 20.0);
-    up.set(0.0, 1.0, 0.0);
+    //e.set(0.0, 25.0, 25.0);
+    e.set(0.0, 200.0, 0.0);
+
+    d.set(0.0, 0.0, 0.0);
+    //up.set(0.0, 1.0, 0.0);
+    up.set(0.0, 0.0, -1.0);
     update();
 }
 

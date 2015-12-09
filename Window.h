@@ -10,6 +10,10 @@ class Window	  // OpenGL output window related routines
 {
 
 public:
+    struct OBJPair {
+        OBJObject* o1;
+        OBJObject* o2;
+    };
     static int width, height; 	            // window size
     
     static void initialize(void);
@@ -24,9 +28,9 @@ public:
 	static void processMotion(int x, int y);
 
 	static Vector3 trackObjMapping(int x, int y);
-    static void insertionSortList(vector<OBJObject*>);
+    static void insertionSortList(vector<OBJObject*>*);
     static void findOverlapPair(vector<OBJObject*>);
-    static void testCollision(void);
+    static void testCollision(vector<OBJPair>);
 };
 
 #endif

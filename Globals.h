@@ -27,6 +27,13 @@ public:
     static OBJObject cloudA2;
     static OBJObject cloudB1;
     static OBJObject cloudB2;
+    
+    static OBJObject ft_wall;
+    static OBJObject bk_wall;
+    static OBJObject lt_wall;
+    static OBJObject rt_wall;
+    
+    
 //    static OBJObject dragon;
 //    static OBJObject bear;
 //    static OBJObject bunny;

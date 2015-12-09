@@ -5,6 +5,7 @@
 #include "Matrix4.h"
 #include "DrawData.h"
 #include "Vector4.h"
+#include "Vector3.h"
 #include "UpdateData.h"
 #include "Material.h"
 #include <float.h>
@@ -22,6 +23,8 @@ class Drawable
 {
     
 public:
+    
+
     //for bounding box;
     float min_x, min_y, min_z, max_x, max_y, max_z;
     bool hasBBox;
@@ -34,6 +37,8 @@ public:
     
     std::vector<Color*>* colorP3;  //added color for Project3, random color
     Vector4 center;
+    Vector3 speed;
+    Vector3 WallDirection;
     int renderMode;
 
 

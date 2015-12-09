@@ -23,7 +23,6 @@ protected:
     
     //Parse
     void parse(std::string&);
-    void drawBoundingBox(void);
 
     
 public:
@@ -38,6 +37,10 @@ public:
     virtual void draw(DrawData&);
     virtual void update(UpdateData&);
     
+    void animate(void);
+    void drawBoundingBox(void);
+    void setSpeed(Vector3);
+
     
     
 };

@@ -67,9 +67,7 @@ void OBJObject::draw(DrawData& data)
     glMultMatrixf(toWorld.ptr());
     
     if (hasBBox) {
-        if (Globals::drawBoundingBox) {
-            drawBoundingBox();
-        }
+        drawBoundingBox();
     }
     
     glBegin(GL_TRIANGLES);
@@ -231,6 +229,12 @@ void OBJObject::parse(std::string& filename)
             max_z = std::stof(tokens.at(3));
             hasBBox = true;
         }
+        else if(tokens.at(0).compare("center") == 0){
+            center.set(std::stof(tokens.at(1)), std::stof(tokens.at(2)), std::stof(tokens.at(3)), 1);
+        }
+        else if(tokens.at(0).compare("direction") == 0){
+            WallDirection.set(std::stof(tokens.at(1)), std::stof(tokens.at(2)), std::stof(tokens.at(3)));
+        }
         else if(tokens.at(0).compare("How does I are C++?!?!!") == 0)
         {
             //Parse as appropriate
@@ -265,6 +269,8 @@ std::vector<std::string> OBJObject::split(const std::string &s, char delim)
 
 
 void OBJObject::drawBoundingBox(){
+    if (Globals::drawBoundingBox) {
+
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     glBegin(GL_QUADS);
  
@@ -313,8 +319,23 @@ void OBJObject::drawBoundingBox(){
 
     glEnd();
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    }
 }
 
+void OBJObject::animate(){
+   
+    /*if ( !this->speed ) {
+        std::cout << "this object speed not initialized" << std::endl;
+        return;
+    }*/
+    Matrix4 displacement;
+    displacement.makeTranslate(speed);
+    toWorld = toWorld * displacement;
+}
+
+void OBJObject::setSpeed(Vector3 v){
+    this->speed.set(v[0], v[1], v[2]);
+}
 
 
 
