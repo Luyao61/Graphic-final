@@ -1,0 +1,5 @@
+Right Wall
+min 100 -100 -100
+max 102 100 100
+center 101 0 0
+direction 1 0 0 

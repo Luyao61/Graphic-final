@@ -3,10 +3,12 @@
 #else
     #include <GL/glut.h>
 #endif
+/*
 #import <OpenAL/alc.h>
 #import <OpenAL/al.h>
 #include <OpenAL/OpenAL.h>
 #include <OpenAL/MacOSX_OALExtensions.h>
+*/
 #include <cstdlib>
 #include "Window.h"
 #include "Cube.h"
@@ -18,6 +20,11 @@
 #include "Texture.h"
 #include <math.h>
 #include <iostream>
+#include "OpenAL-56/Source/OpenAL/al/OpenAL.h"
+#include "OpenAL-56/Source/OpenAL/al/al.h"
+#include "OpenAL-56/Source/OpenAL/al/alc.h"
+#include "OpenAL-56/Source/OpenAL/al/alut.h"
+
 #define TEST_XMAS			"src/merryXmas.wav"
 #define SNOW_COUNT	1000	// particle count
 using namespace std;
@@ -45,6 +52,7 @@ float z_d = 0.0f;
 
 
 bool cloudAnimantion = false;
+bool snowAnimation = false;
 
 vector<OBJObject*> list_x;
 //vector<OBJObject*> list_y;
@@ -59,8 +67,8 @@ GLfloat yrot;
 Texture * snowFlake;
 int snowFrameCount = 0;
 //openAL
-ALuint      uiBuffer[3];
-ALuint      uiSource[3];
+ALuint outputSource[2];
+ALuint outputBuffer[2];
 ALint       iState, iState2, iState3;
 
 struct SSnow
@@ -71,9 +79,6 @@ struct SSnow
     float Rspeed;
 };
 SSnow sSnow[SNOW_COUNT];
-
-#define NUM_BUFFERS 3
-#define BUFFER_SIZE 4096
 
 
 void Window::initialize(void)
@@ -117,7 +122,6 @@ void Window::initialize(void)
     Globals::lt_wall.speed.set(0, 0, 0);
     Globals::rt_wall.speed.set(0, 0, 0);
     
-
     Globals::cloud1.speed.set(randomFloat(), 0, randomFloat());
     Globals::cloud2.speed.set(randomFloat(), 0, randomFloat());
     Globals::cloud3.speed.set(randomFloat(), 0, randomFloat());
@@ -126,7 +130,17 @@ void Window::initialize(void)
     Globals::cloud6.speed.set(randomFloat(), 0, randomFloat());
     Globals::cloud7.speed.set(randomFloat(), 0, randomFloat());
     Globals::cloud8.speed.set(randomFloat(), 0, randomFloat());
-    
+
+    /*
+    Globals::cloud1.speed.set( 1.6, 0, -0.9);
+    Globals::cloud2.speed.set( 0.6, 0, -1.2);
+    Globals::cloud3.speed.set(-1, 0, 1.4);
+    Globals::cloud4.speed.set(-1.9, 0, 1.6);
+    Globals::cloud5.speed.set(-1.4, 0, -1.3);
+    Globals::cloud6.speed.set(-1.2, 0, 1.8);
+    Globals::cloud7.speed.set(1.5, 0, -1.1);
+    Globals::cloud8.speed.set(1.5, 0, 1.3);
+     */
     
     list_x = *new vector<OBJObject*>;
 
@@ -171,35 +185,80 @@ void Window::initialize(void)
     alcMakeContextCurrent(openALContext);
     
     //generate output source
-    ALuint outputSource;
-    alGenSources(1, &outputSource);
+    alGenSources(2, outputSource);
     //create buffers to hold data
-    ALuint outputBuffer;
-    alGenBuffers(1, &outputBuffer);
+    alGenBuffers(2, outputBuffer);
+    ALenum     format;
+    ALsizei    size;
+    ALsizei    freq;
+    ALvoid*    data;
     
-    alSourcei(outputSource, AL_BUFFER, outputBuffer);
-    
-    FILE *fp = fopen("src/merryXmas.wav", "r");
-    if (!fp) {
-        fclose(fp);
+    alutLoadWAVFile("src/merryXmas.wav", &format, &data, &size, &freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alutLoadWAVFile exciting_sound.wav : %d", error);
+        // Delete Buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
     }
-    char* ChunkID = new char[4];
-    fread(ChunkID, 4, sizeof(char), fp);
-    
-    if (strcmp(ChunkID, "RIFF")) {
-        delete [] ChunkID;
+    alBufferData(outputBuffer[0],format,data,size,freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alBufferData buffer 0 : %d", error);
+        // Delete buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
     }
-    fseek(fp, 8, SEEK_SET);
-    char *Format = new char[4];
-    fread(Format, 4, sizeof(char), fp);
-    if (strcmp(ChunkID, "RIFF")) {
-        delete [] ChunkID;
-        delete [] Format;
+    alutUnloadWAV(format,data,size,freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alutUnloadWAV : %d", error);
+        // Delete buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
     }
 
     
-
+    alutLoadWAVFile("src/wish_merryXmas.wav", &format, &data, &size, &freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alutLoadWAVFile exciting_sound.wav : %d", error);
+        // Delete Buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
+    }
+    alBufferData(outputBuffer[1],format,data,size,freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alBufferData buffer 0 : %d", error);
+        // Delete buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
+    }
+    alutUnloadWAV(format,data,size,freq);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alutUnloadWAV : %d", error);
+        // Delete buffers
+        alDeleteBuffers(2, outputBuffer);
+        exit(0);
+    }
     
+    alSourcei(outputSource[0], AL_BUFFER, outputBuffer[0]);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alSourcei : %d", error);
+        exit(0);
+    }
+    alSourcei(outputSource[1], AL_BUFFER, outputBuffer[1]);
+    if ((error = alGetError()) != AL_NO_ERROR)
+    {
+        printf("alSourcei : %d", error);
+        exit(0);
+    }
+
+    alSourcePlay(outputSource[1]);
+
 }
 
 //----------------------------------------------------------------------------
@@ -228,6 +287,18 @@ void Window::reshapeCallback(int w, int h)
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
 {
+    if (snowAnimation ) {
+        alGetSourcei(outputSource[0], AL_SOURCE_STATE, &iState);
+        if (iState == AL_STOPPED){
+            alSourcePlay(outputSource[0]);}
+
+    }
+    else{
+        alGetSourcei(outputSource[1], AL_SOURCE_STATE, &iState);
+        if (iState == AL_STOPPED){
+            alSourcePlay(outputSource[1]);}
+    }
+    
     Globals::cloud1.showRedBBox = false;
     Globals::cloud2.showRedBBox = false;
     Globals::cloud3.showRedBBox = false;
@@ -365,14 +436,20 @@ void Window::displayCallback()
     
     glDisable(GL_TEXTURE_2D);
 
-    if (snowFrameCount > 0)
+    if (snowAnimation)
     {
+        /*
         if (snowFrameCount == 300)
         {
-            //alSourcePause(uiSource[0]);
-            //alSourcePlay(uiSource[2]);
-            //alSourcePlay(uiSource[0]);
+            alSourcePause(outputSource[1]);
+            alSourcePlay(outputSource[0]);
+            //alSourcePlay(outputSource[0]);
         }
+        if(snowFrameCount == 1){
+            alSourcePause(outputSource[0]);
+            alSourcePlay(outputSource[1]);
+        }
+         */
         
         glClear(GL_DEPTH_BUFFER_BIT);
         glLoadMatrixf(Globals::camera.getInverseMatrix().ptr());
@@ -447,7 +524,7 @@ void Window::displayCallback()
             }
         }
         yrot += 0.2f;
-        snowFrameCount--;
+        //snowFrameCount--;
         glDisable(GL_BLEND);
     }
     
@@ -516,6 +593,18 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
     else if(key == 'p'){
         cloudAnimantion = !cloudAnimantion;
     }
+    else if(key == 'm'){
+        snowAnimation = !snowAnimation;
+        if (snowAnimation) {
+            alSourcePause(outputSource[1]);
+            alSourcePlay(outputSource[0]);
+        }
+        else{
+            alSourcePause(outputSource[0]);
+            alSourcePlay(outputSource[1]);
+        }
+
+    }
 }
 //TODO: Function Key callbacks!
 void Window::processSpecialKeys(int key, int x, int y) {
@@ -570,9 +659,7 @@ void Window::processMotion(int x, int y) {
         Globals::camera.d.set(Globals::camera.e[0] + x_d, Globals::camera.e[1] + y_d, Globals::camera.e[2] - z_d);
         
         //y_v = 20.f * cos(angle_Vertical + deltaAngleY);
-
         Globals::camera.update();
-        
     }
 }
 
@@ -700,7 +787,6 @@ void Window::testCollision(vector<OBJPair> possibleCollisionPair){
                     o1->setSpeed(o1->speed.negate());
                     o2->setSpeed(o2->speed.negate());
                 }
-                snowFrameCount = 300;
             }
         }
     }

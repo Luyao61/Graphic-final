@@ -1,0 +1,5 @@
+Top Wall
+min -100 100 -100
+max 100 102 100
+center 0 101 0
+direction 0 1 0

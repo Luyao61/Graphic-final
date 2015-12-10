@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		096B7F371C18DA46005D4B04 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 096B7F361C18DA46005D4B04 /* OpenAL.framework */; };
 		09845B1D1C1508DE00522E71 /* lsys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09845B1B1C1508DE00522E71 /* lsys.cpp */; };
+		09AD03171C19614600637E45 /* OpenAL-56 in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AD03161C19614600637E45 /* OpenAL-56 */; };
 		09D107A91C0CCBF50054ECC2 /* Rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */; };
 		D40AFA801AD1E2E7008D61CC /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */; };
 		D42FFC311AAFCC9C006F8E9C /* Matrix4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D42FFC2A1AAFCC9C006F8E9C /* Matrix4.cpp */; };
@@ -56,6 +57,7 @@
 		09845B0E1C0E806900522E71 /* dirLightAmbDiffSpec.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = dirLightAmbDiffSpec.vert; sourceTree = SOURCE_ROOT; };
 		09845B1B1C1508DE00522E71 /* lsys.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lsys.cpp; sourceTree = SOURCE_ROOT; };
 		09845B1C1C1508DE00522E71 /* lsys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lsys.h; sourceTree = SOURCE_ROOT; };
+		09AD03161C19614600637E45 /* OpenAL-56 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "OpenAL-56"; sourceTree = "<group>"; };
 		09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rasterizer.cpp; sourceTree = SOURCE_ROOT; };
 		09D107A81C0CCBF50054ECC2 /* Rasterizer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Rasterizer.hpp; sourceTree = SOURCE_ROOT; };
 		D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = SOURCE_ROOT; };
@@ -113,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09AD03171C19614600637E45 /* OpenAL-56 in Frameworks */,
 				096B7F371C18DA46005D4B04 /* OpenAL.framework in Frameworks */,
 				D42FFC371AAFCDA0006F8E9C /* OpenGL.framework in Frameworks */,
 				D42FFC351AAFCD9A006F8E9C /* GLUT.framework in Frameworks */,
@@ -125,6 +128,7 @@
 		D42FFC151AAFC90E006F8E9C = {
 			isa = PBXGroup;
 			children = (
+				09AD03161C19614600637E45 /* OpenAL-56 */,
 				096B7F361C18DA46005D4B04 /* OpenAL.framework */,
 				D42FFC361AAFCDA0006F8E9C /* OpenGL.framework */,
 				D42FFC341AAFCD9A006F8E9C /* GLUT.framework */,

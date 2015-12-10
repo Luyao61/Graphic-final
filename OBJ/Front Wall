@@ -1,0 +1,5 @@
+Front Wall
+min -100 -100 100
+max 100 100 102
+center 0 0 101
+direction 0 0 1
