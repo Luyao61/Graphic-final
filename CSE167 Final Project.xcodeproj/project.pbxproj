@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		096B7F371C18DA46005D4B04 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 096B7F361C18DA46005D4B04 /* OpenAL.framework */; };
 		09845B1D1C1508DE00522E71 /* lsys.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09845B1B1C1508DE00522E71 /* lsys.cpp */; };
 		09D107A91C0CCBF50054ECC2 /* Rasterizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 09D107A71C0CCBF50054ECC2 /* Rasterizer.cpp */; };
 		D40AFA801AD1E2E7008D61CC /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40AFA7E1AD1E2E7008D61CC /* Shader.cpp */; };
@@ -48,6 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		096B7F361C18DA46005D4B04 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		09845B091C0E3C2C00522E71 /* Toon.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Toon.vert; sourceTree = SOURCE_ROOT; };
 		09845B0A1C0E3C3C00522E71 /* Toon.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = Toon.frag; sourceTree = SOURCE_ROOT; };
 		09845B0D1C0E806900522E71 /* dirLightAmbDiffSpec.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = dirLightAmbDiffSpec.frag; sourceTree = SOURCE_ROOT; };
@@ -111,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				096B7F371C18DA46005D4B04 /* OpenAL.framework in Frameworks */,
 				D42FFC371AAFCDA0006F8E9C /* OpenGL.framework in Frameworks */,
 				D42FFC351AAFCD9A006F8E9C /* GLUT.framework in Frameworks */,
 			);
@@ -122,6 +125,7 @@
 		D42FFC151AAFC90E006F8E9C = {
 			isa = PBXGroup;
 			children = (
+				096B7F361C18DA46005D4B04 /* OpenAL.framework */,
 				D42FFC361AAFCDA0006F8E9C /* OpenGL.framework */,
 				D42FFC341AAFCD9A006F8E9C /* GLUT.framework */,
 				D42FFC201AAFC90E006F8E9C /* CSE167 Final Project */,

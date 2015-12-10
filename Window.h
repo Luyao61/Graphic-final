@@ -31,6 +31,9 @@ public:
     static void insertionSortList(vector<OBJObject*>*);
     static void findOverlapPair(vector<OBJObject*>);
     static void testCollision(vector<OBJPair>);
+    
+    static float randomFloat();
+
 };
 
 #endif

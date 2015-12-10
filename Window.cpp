@@ -1,11 +1,13 @@
 #ifdef __APPLE__
-
-#include <GLUT/glut.h>
-
+    #include <GLUT/glut.h>
 #else
     #include <GL/glut.h>
 #endif
-
+#import <OpenAL/alc.h>
+#import <OpenAL/al.h>
+#include <OpenAL/OpenAL.h>
+#include <OpenAL/MacOSX_OALExtensions.h>
+#include <cstdlib>
 #include "Window.h"
 #include "Cube.h"
 #include "Matrix4.h"
@@ -13,8 +15,11 @@
 #include "Skybox.hpp"
 #include "BezierPatch.h"
 #include "Shader.h"
+#include "Texture.h"
 #include <math.h>
 #include <iostream>
+#define TEST_XMAS			"src/merryXmas.wav"
+#define SNOW_COUNT	1000	// particle count
 using namespace std;
 
 int Window::width  = 512;   //Set window width in pixels here
@@ -39,18 +44,42 @@ float y_d = 0.0f;
 float z_d = 0.0f;
 
 
-
+bool cloudAnimantion = false;
 
 vector<OBJObject*> list_x;
-vector<OBJObject*> list_y;
-vector<OBJObject*> list_z;
+//vector<OBJObject*> list_y;
+//vector<OBJObject*> list_z;
+OBJObject * OBJptr = &Globals::cloud1;
 
-OBJObject * OBJptr = &Globals::cloudA1;
+
+//SNOW FLAKEs
+unsigned char* snowflake;
+GLuint snowTexture;
+GLfloat yrot;
+Texture * snowFlake;
+int snowFrameCount = 0;
+//openAL
+ALuint      uiBuffer[3];
+ALuint      uiSource[3];
+ALint       iState, iState2, iState3;
+
+struct SSnow
+{
+    float x, y, z;
+    float xrot, yrot, zrot;
+    float Dspeed;
+    float Rspeed;
+};
+SSnow sSnow[SNOW_COUNT];
+
+#define NUM_BUFFERS 3
+#define BUFFER_SIZE 4096
+
 
 void Window::initialize(void)
 {
     //Setup the light
-    Vector4 lightPos(0.0, 200.0, 0.0, 1.0);
+    Vector4 lightPos(100.0, 100.0, 100.0, 1.0);
     Globals::light.position = lightPos;
     Globals::light.quadraticAttenuation = 0.00;
     Globals::light.constantAttenuation = 1.0;
@@ -72,46 +101,105 @@ void Window::initialize(void)
         Globals::charizard.moveZ();
     }*/
     
-    for (int i =0 ; i<80; i++) {
-        Globals::cloudA1.moveX();
-        Globals::cloudB1.movex();
-        Globals::cloudA2.moveZ();
-        Globals::cloudB2.movez();
-    }
-    for (int i =0 ; i<8; i++) {
-        Globals::cloudA2.moveX();
-        Globals::cloudB2.movex();
-    }
+    
+    Globals::cloud1.translate(86, 70, 24);
+    Globals::cloud2.translate(37, 70, 70);
+    Globals::cloud3.translate(-12, 70, -40);
+    Globals::cloud4.translate(10, 70, -66);
+    Globals::cloud5.translate(0, 70, 0);
+    Globals::cloud6.translate(-85, 70, -20);
+    Globals::cloud7.translate(-52, 70, -85);
+    Globals::cloud8.translate(-80, 70, -80);
+
     
     Globals::ft_wall.speed.set(0, 0, 0);
     Globals::bk_wall.speed.set(0, 0, 0);
     Globals::lt_wall.speed.set(0, 0, 0);
     Globals::rt_wall.speed.set(0, 0, 0);
     
-    Globals::cloudA1.speed.set(0.5, 0, -0.5);
-    Globals::cloudB1.speed.set(-0.5, 0, 0.5);
-    Globals::cloudA2.speed.set(0.2, 0, 0.8);
-    Globals::cloudB2.speed.set(-0.6, 0, 0.4);
+
+    Globals::cloud1.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud2.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud3.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud4.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud5.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud6.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud7.speed.set(randomFloat(), 0, randomFloat());
+    Globals::cloud8.speed.set(randomFloat(), 0, randomFloat());
     
     
     list_x = *new vector<OBJObject*>;
 
-    list_x.push_back(&Globals::cloudA1);
-    list_x.push_back(&Globals::cloudB1);
+    list_x.push_back(&Globals::cloud1);
+    list_x.push_back(&Globals::cloud2);
+    list_x.push_back(&Globals::cloud3);
+    list_x.push_back(&Globals::cloud4);
+    list_x.push_back(&Globals::cloud5);
+    list_x.push_back(&Globals::cloud6);
+    list_x.push_back(&Globals::cloud7);
+    list_x.push_back(&Globals::cloud8);
     list_x.push_back(&Globals::ft_wall);
     list_x.push_back(&Globals::bk_wall);
     list_x.push_back(&Globals::lt_wall);
     list_x.push_back(&Globals::rt_wall);
-    list_x.push_back(&Globals::cloudA2);
-    list_x.push_back(&Globals::cloudB2);
 
 
-    //list_y.push_back(&Globals::cloudA1);
-    //list_y.push_back(&Globals::cloudB1);
-    //list_z.push_back(&Globals::cloudA1);
-    //list_z.push_back(&Globals::cloudB1);
     insertionSortList(&list_x);
     findOverlapPair(list_x);
+    
+    srand(1);
+    for (int i = 0; i<SNOW_COUNT; i++)
+    {
+        sSnow[i].x = float(rand() % 200 - 100);
+        sSnow[i].z = float(rand() % 200 - 100);
+        sSnow[i].y = 100.0f + float(rand() % 25);
+        sSnow[i].xrot = sSnow[i].yrot = sSnow[i].zrot = 0;
+        sSnow[i].Dspeed = 0.05f*(rand() % 10 + 2);
+        sSnow[i].Rspeed = 0.1f*(rand() % 10 + 2);
+    }
+    
+    snowFlake = new Texture("src/snowflakeppm");
+    snowFlake->bind();
+    
+    Globals::tree.scale((float)0.6);
+    Globals::tree.translate(0,-60,0);
+
+    ALCdevice* openALDevice = alcOpenDevice(NULL);
+    ALenum error = alGetError();
+    
+    ALCcontext* openALContext = alcCreateContext(openALDevice, NULL);
+    alcMakeContextCurrent(openALContext);
+    
+    //generate output source
+    ALuint outputSource;
+    alGenSources(1, &outputSource);
+    //create buffers to hold data
+    ALuint outputBuffer;
+    alGenBuffers(1, &outputBuffer);
+    
+    alSourcei(outputSource, AL_BUFFER, outputBuffer);
+    
+    FILE *fp = fopen("src/merryXmas.wav", "r");
+    if (!fp) {
+        fclose(fp);
+    }
+    char* ChunkID = new char[4];
+    fread(ChunkID, 4, sizeof(char), fp);
+    
+    if (strcmp(ChunkID, "RIFF")) {
+        delete [] ChunkID;
+    }
+    fseek(fp, 8, SEEK_SET);
+    char *Format = new char[4];
+    fread(Format, 4, sizeof(char), fp);
+    if (strcmp(ChunkID, "RIFF")) {
+        delete [] ChunkID;
+        delete [] Format;
+    }
+
+    
+
+    
 }
 
 //----------------------------------------------------------------------------
@@ -140,6 +228,20 @@ void Window::reshapeCallback(int w, int h)
 // Callback method called by GLUT when window readraw is necessary or when glutPostRedisplay() was called.
 void Window::displayCallback()
 {
+    Globals::cloud1.showRedBBox = false;
+    Globals::cloud2.showRedBBox = false;
+    Globals::cloud3.showRedBBox = false;
+    Globals::cloud4.showRedBBox = false;
+    Globals::cloud5.showRedBBox = false;
+    Globals::cloud6.showRedBBox = false;
+    Globals::cloud7.showRedBBox = false;
+    Globals::cloud8.showRedBBox = false;
+    
+    Globals::ft_wall.showRedBBox = false;
+    Globals::bk_wall.showRedBBox = false;
+    Globals::lt_wall.showRedBBox = false;
+    Globals::rt_wall.showRedBBox = false;
+    
     //collision detection;
     insertionSortList(&list_x);
     findOverlapPair(list_x);
@@ -171,22 +273,78 @@ void Window::displayCallback()
     //(if we didn't the light would move with the camera, why is that?)
     //
     Globals::light.bind(0);
+    if (cloudAnimantion) {
+        Globals::cloud1.animate();
+        Globals::cloud2.animate();
+        Globals::cloud3.animate();
+        Globals::cloud4.animate();
+        Globals::cloud5.animate();
+        Globals::cloud6.animate();
+        Globals::cloud7.animate();
+        Globals::cloud8.animate();
+    }
+
     
+    Globals::l1.update();
+    Globals::l1.draw();
+    Globals::l2.update();
+    Globals::l2.draw();
+    Globals::l3.update();
+    Globals::l3.draw();
+    Globals::l4.update();
+    Globals::l4.draw();
+    
+    Globals::l5.update();
+    Globals::l5.draw();
+    Globals::l6.update();
+    Globals::l6.draw();
+    Globals::l7.update();
+    Globals::l7.draw();
+    Globals::l8.update();
+    Globals::l8.draw();
+    
+    Globals::l9.update();
+    Globals::l9.draw();
+    Globals::l10.update();
+    Globals::l10.draw();
+    Globals::l11.update();
+    Globals::l11.draw();
+    Globals::l12.update();
+    Globals::l12.draw();
+    
+    Globals::y1.update();
+    Globals::y1.draw();
+    Globals::y2.update();
+    Globals::y2.draw();
+    Globals::y3.update();
+    Globals::y3.draw();
+    Globals::y4.update();
+    Globals::y4.draw();
+    
+    Globals::y5.update();
+    Globals::y5.draw();
+    Globals::y6.update();
+    Globals::y6.draw();
+    Globals::y7.update();
+    Globals::y7.draw();
+    Globals::y8.update();
+    Globals::y8.draw();
     
     //sky->draw();
 
     //light_Shader->bind();
     //toon_Shader -> bind();
     
-    Globals::cloudA1.animate();
-    Globals::cloudB1.animate();
-    Globals::cloudA2.animate();
-    Globals::cloudB2.animate();
+    Globals::tree.draw(Globals::drawData);
 
-    Globals::cloudA1.draw(Globals::drawData);
-    Globals::cloudB1.draw(Globals::drawData);
-    Globals::cloudA2.draw(Globals::drawData);
-    Globals::cloudB2.draw(Globals::drawData);
+    Globals::cloud1.draw(Globals::drawData);
+    Globals::cloud2.draw(Globals::drawData);
+    Globals::cloud3.draw(Globals::drawData);
+    Globals::cloud4.draw(Globals::drawData);
+    Globals::cloud5.draw(Globals::drawData);
+    Globals::cloud6.draw(Globals::drawData);
+    Globals::cloud7.draw(Globals::drawData);
+    Globals::cloud8.draw(Globals::drawData);
     
     Globals::ft_wall.drawBoundingBox();
     Globals::bk_wall.drawBoundingBox();
@@ -199,9 +357,99 @@ void Window::displayCallback()
     //DrawScene(0);
     
     //ucsd_Shader->bind();
-    platform->draw();
+    //platform->draw();
     //ucsd_Shader->unbind();
     //light_Shader->unbind();
+    
+    
+    
+    glDisable(GL_TEXTURE_2D);
+
+    if (snowFrameCount > 0)
+    {
+        if (snowFrameCount == 300)
+        {
+            //alSourcePause(uiSource[0]);
+            //alSourcePlay(uiSource[2]);
+            //alSourcePlay(uiSource[0]);
+        }
+        
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glLoadMatrixf(Globals::camera.getInverseMatrix().ptr());
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);					// Set The Blending Function For Translucency
+        glEnable(GL_BLEND);
+        for (int i = 0; i<SNOW_COUNT; i++)
+        {
+            if(1)// (!(sSnow[i].x > width || sSnow[i].y > height || sSnow[i].z > 500))
+            {
+                glLoadIdentity();									// Reset The View
+                glTranslatef(0.0f, -30.0f, -150.0f);
+                glRotatef(yrot, 0.0f, 1.0f, 0.0f);
+                glBindTexture(GL_TEXTURE_2D, snowTexture);
+                glTranslatef(sSnow[i].x, sSnow[i].y, sSnow[i].z);
+                glRotatef(sSnow[i].xrot, 1.0f, 0.0f, 0.0f);
+                glRotatef(sSnow[i].yrot, 0.0f, 1.0f, 0.0f);
+                glRotatef(sSnow[i].zrot, 0.0f, 0.0f, 1.0f);
+                
+                glScalef(0.11f, 0.09f, 0.096f);
+                //glScalef(0.0812f,0.0851f,0.08512f);
+                glBegin(GL_LINES);
+                
+                ///////////////////////////////////////////////////////////////////////////////
+                // Front Face
+                glNormal3f(0.0f, 0.0f, 0.5f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+                // Back Face
+                glNormal3f(0.0f, 0.0f, -0.5f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+                // Top Face
+                glNormal3f(0.0f, 0.5f, 0.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+                // Bottom Face
+                glNormal3f(0.0f, -0.5f, 0.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+                // Right Face
+                glNormal3f(0.5f, 0.0f, 0.0f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0f, -1.0f, -1.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(1.0f, 1.0f, -1.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(1.0f, 1.0f, 1.0f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(1.0f, -1.0f, 1.0f);
+                // Left Face
+                glNormal3f(-0.5f, 0.0f, 0.0f);
+                glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+                glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
+                glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
+                glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+                //////////////////////////////////////////////////////////////////////
+                
+                glEnd();
+                /////////////////////////////////////////////////////////////end
+                
+                //std::cout << sSnow[i].x << "	" << sSnow[i].y << "	" << sSnow[i].z << std::endl;
+                sSnow[i].y -= sSnow[i].Dspeed;
+                if (sSnow[i].y < -33)
+                    sSnow[i].y = 125.0f;
+                sSnow[i].xrot += sSnow[i].Rspeed;
+                sSnow[i].yrot += sSnow[i].Rspeed;
+                sSnow[i].zrot += sSnow[i].Rspeed;
+            }
+        }
+        yrot += 0.2f;
+        snowFrameCount--;
+        glDisable(GL_BLEND);
+    }
     
     
 
@@ -227,10 +475,8 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
         Globals::drawBoundingBox = !Globals::drawBoundingBox;
     }
     else if (key == 's') {
-        Globals::cloudA1.animate();
     }
     else if (key == 'S'){
-        Globals::cloudB1.animate();
     }
     else if (key == 'x'){
         OBJptr->movex();
@@ -256,16 +502,19 @@ void Window::processNormalKeys(unsigned char key, int x, int y) {
         //OBJptr->toWorld.identity();
     }
     else if(key == '1'){
-        OBJptr = &Globals::cloudA1;
+        OBJptr = &Globals::cloud1;
     }
     else if(key == '2'){
-        OBJptr = &Globals::cloudA2;
+        OBJptr = &Globals::cloud2;
     }
     else if(key == '3'){
-        OBJptr = &Globals::cloudB1;
+        OBJptr = &Globals::cloud3;
     }
     else if(key == '4'){
-        OBJptr = &Globals::cloudB2;
+        OBJptr = &Globals::cloud4;
+    }
+    else if(key == 'p'){
+        cloudAnimantion = !cloudAnimantion;
     }
 }
 //TODO: Function Key callbacks!
@@ -426,9 +675,14 @@ void Window::testCollision(vector<OBJPair> possibleCollisionPair){
         
         if (o1VectorMin[1] < o2VectorMax[1] && o2VectorMin[1] < o1VectorMax[1]) {
             if (o1VectorMin[2] < o2VectorMax[2] && o2VectorMin[2] < o1VectorMax[2]) {
-                cout << "Colision" << " "<< t << endl;
+                //cout << "Colision" << " "<< t << endl;
+                
+                
                 o1 = possibleCollisionPair.at(i).o1;
                 o2 = possibleCollisionPair.at(i).o2;
+                
+                o1->showRedBBox = true;
+                o2->showRedBBox = true;
                 //handle ball wall collision
                 if (o1->speed.magnitude() == 0) {
                     //Vec3f dir = (wallDirection(w)).normalize();
@@ -446,7 +700,7 @@ void Window::testCollision(vector<OBJPair> possibleCollisionPair){
                     o1->setSpeed(o1->speed.negate());
                     o2->setSpeed(o2->speed.negate());
                 }
-
+                snowFrameCount = 300;
             }
         }
     }
@@ -463,4 +717,12 @@ Vector3 Window::trackObjMapping(int x, int y) {
 	v.set((2.0*x - width) / width, (height - 2.0*y) / height, sqrtf(1.001 - d*d));
 	v = v.normalize();
 	return v;
+}
+
+
+float Window::randomFloat(){
+    const float MIN_RAND = -1.0, MAX_RAND = 1.0;
+    const float range = MAX_RAND - MIN_RAND;
+    float random = range * ((((float) rand()) / (float) RAND_MAX)) + MIN_RAND ;
+    return random;
 }

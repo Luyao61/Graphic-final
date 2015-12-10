@@ -14,36 +14,29 @@
 #include <iostream>
 #include <map>
 #include <stack>
+#include "Drawable.h"
 
-class lsys{
+class lsys : public Drawable{
     
 public:
     
+    lsys(Vector3 position, int rule_number);
+    void setPosition(Vector3 position);
+    void draw();
+    void update();
     std::string result;
     
-    lsys();
-    
-    void setPosition(Vector3 position);
-    
-    void draw();
-    
-    
 private:
-    
     std::map<char,std::string> rule;
-    
     Vector3 start;
-        
     void forward(float);
-    
     void f_angle();
-    
-    
     float theta;
     float current_angle;
     Vector3 current_location;
-
-
+    float line_width;
+    int rule_number;
+    int j;
 };
 
 

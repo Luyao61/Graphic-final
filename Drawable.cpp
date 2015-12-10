@@ -100,7 +100,12 @@ void Drawable::movez(){
     toWorld = move * toWorld;
     center = move * center;
 }
-
+void Drawable::translate(float v1, float v2, float v3){
+    Matrix4 move;
+    move.makeTranslate(v1,v2,v3);
+    toWorld = move * toWorld;
+    center = move * center;
+}
 
 void Drawable::scale(bool x){
     Matrix4 scale;
@@ -112,7 +117,7 @@ void Drawable::scale(bool x){
     }
     toWorld = toWorld * scale;
 }
-void Drawable::scale(int x){
+void Drawable::scale(float x){
     Matrix4 scale;
 
     scale.makeScale(x);

@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
     
     glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);        //Enable Local Viewer Light Model
     
+    //enter full screen mode
+    glutFullScreen();
+    
     //Register callback functions:
     glutDisplayFunc(Window::displayCallback);
     glutReshapeFunc(Window::reshapeCallback);
@@ -82,6 +85,7 @@ int main(int argc, char *argv[])
     glutMainLoop();
     
     return 0;
+
 }
 
 

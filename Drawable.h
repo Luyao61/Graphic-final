@@ -41,7 +41,7 @@ public:
     Vector3 WallDirection;
     int renderMode;
 
-
+    bool showRedBBox;
     
     Matrix4 toWorld;
     Material material;
@@ -59,11 +59,12 @@ public:
     void movez();
     void moveZ();
     void scale(bool);
-    void scale(int);
+    void scale(float);
     void orbit(float);
     
     void spin(float);
     void reset();
+    void translate(float,float,float);
 
     
 };

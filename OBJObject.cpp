@@ -46,6 +46,7 @@ OBJObject::OBJObject(OBJObject const &obj) : Drawable(){
     this->normals = obj.normals;
     this->faces = obj.faces;
     this->colors = obj.colors;
+    showRedBBox = false;
 }
 
 OBJObject::~OBJObject()
@@ -271,7 +272,13 @@ std::vector<std::string> OBJObject::split(const std::string &s, char delim)
 void OBJObject::drawBoundingBox(){
     if (Globals::drawBoundingBox) {
 
-    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        if (showRedBBox) {
+            glColor3f(1.0, 0, 0);
+        }
+        else{
+            glColor3f(1.0, 1.0, 1.0);
+        }
     glBegin(GL_QUADS);
  
  // Draw front face:
